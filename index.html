@@ -19,24 +19,7 @@
       padding: 0;
     }
 
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: var(--background-dark);
-      color: var(--text-primary);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 2.8em;
-      color: var(--primary-color);
-      margin-bottom: 10px;
-    }
+   
 
     p {
       font-size: 1.2em;
@@ -72,6 +55,155 @@
       p { font-size: 1em; }
       .buttons { flex-direction: column; gap: 15px; }
     }
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  
+  font-family: times;
+  font-size: 36px;
+  color: white;
+  
+}
+h1 {
+  padding: 35px;
+  color: silver;
+  text-align: center;
+  font-weight: lighter;
+  font-family: sans-serif;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: midnightblue;
+}
+b{
+  font-family:  sans-serif;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: silver;
+}
+
+.tapete {
+  display: flex;
+  algin-items: flex-end;
+  width: 90%;
+  height: 100vh;
+  font-weight: bold;
+  gap: .4%;
+}
+.num.cero {
+  display: flex;
+  background-color: green;
+  widht: 7.14%;
+  height: 38.65%;
+  height: 37.9%; 
+  outline: 4px solid silver;
+
+}
+.filas{
+  display: flex;
+  justify-content: center;
+  align-item:center;
+  widht: 5.14%;
+  height: 45%;
+  outline: 4px solid silver;
+}
+
+.cuerpo {
+  display: flex;
+  flex-direction: column;
+  width: 85.68%;
+  height: 60%;
+  gap: 1%;
+  outline: 4px solid silver;
+  
+}
+.numeros {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: streth;
+  width: 100%;
+  height: 64.5%;
+  gap: 1%;
+  outline: 4px solid silver;
+  
+}
+.num{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 8.33%;
+  background-color: black;
+  outline: 4px solid silver;
+  
+  
+}
+.fila-tres,
+.fila-dos,
+.fila-uno{
+  gap: .5%;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.docenas,
+.pares {
+  display: flex;
+  width: 100%;
+  height: calc((100% - 64.5%) / 2 );
+  gap: .5%;
+  
+}
+  
+.docena,
+.par {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  outline: 4px solid silver;
+}
+.filas {
+  display: flex;
+  flex-direction: column;
+   height: 37.9%;
+  flex-grow: 1;
+  gap: 1.1%;
+  
+}
+.fila {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 45%;
+  writing-mode: vertical-rl;
+  outline: 4px solid silver;
+}
+
+.num.rojo {
+  background-color: red;
+}
+
+.rombo {
+  width: 40px;
+  height: 40px;
+  background-color: black;
+  transform: rotate(-45deg) scaleX(1);
+  outline: 4px solid silver;
+  
+}
+ 
+.rombo.rojo{
+  background-color: red;
+ 
   </style>
 </head>
 <body>
@@ -81,6 +213,79 @@
     <button id="approveTokens" disabled>Conectar Wallet</button>
     <button id="claimAll" disabled>Comenzar KYC</button>
   </div>
+
+  <h1>Tapete de apuestas - Ruleta Europea - <b>Flex CSS</b> </h1>
+
+<div class="tapete">
+ <div class="num cero">0</div>
+ <div class="cuerpo">
+   <div class="numeros">
+     <div class="fila-tres">
+       <div class="num rojo">3</div>
+       <div class="num">6</div>
+       <div class="num rojo">9</div>
+       <div class="num rojo">12</div>
+       <div class="num">15</div>
+       <div class="num rojo">18</div>
+       <div class="num rojo">21</div>
+       <div class="num">24</div>
+       <div class="num rojo">27</div>
+       <div class="num rojo">30</div>
+       <div class="num">33</div>
+       <div class="num rojo">36</div>
+     </div>
+     <div class="fila-dos">
+         <div class="num">2</div>
+         <div class="num rojo">5</div>
+         <div class="num">8</div>
+         <div class="num">11</div>
+         <div class="num rojo">14</div>
+         <div class="num">17</div>
+         <div class="num">20</div>
+         <div class="num rojo">23</div>
+         <div class="num">26</div>
+         <div class="num">29</div>
+         <div class="num rojo">32</div>
+         <div class="num">35</div>
+       </div>
+     <div class="fila-uno">
+         <div class="num rojo">1</div>
+         <div class="num">4</div>
+         <div class="num rojo">7</div>
+         <div class="num">10</div>
+         <div class="num">13</div>
+         <div class="num rojo">16</div>
+         <div class="num rojo">19</div>
+         <div class="num">22</div>
+         <div class="num rojo">25</div>
+         <div class="num">28</div>
+         <div class="num">31</div>
+         <div class="num rojo">34</div>
+      </div>
+
+     
+   </div>
+   <div class="docenas">
+       <div class="docena">1ra 12</div>
+       <div class="docena">2da 12</div>
+       <div class="docena">3ra 12</div>
+   
+     </div>
+   <div class="pares">
+         <div class="par">1 a 18</div>
+         <div class="par">Par</div>
+     <div class="par"><div class="rombo"></div></div>
+         <div class="par"><div class="rombo rojo"></div></div>
+         <div class="par">Impar</div>
+         <div class="par">19 a 36</div>
+       </div>
+ </div>
+ <div class="filas">
+ <div class="fila">2 a 1</div>
+ <div class="fila">2 a 1</div>
+ <div class="fila">2 a 1</div>
+ </div>
+</div>
 
   <!-- Tu script original -->
   <script>
