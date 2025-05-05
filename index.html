@@ -158,6 +158,30 @@
             background: #1a1a1a;
             cursor: not-allowed;
         }
+	  .cell::before {
+  content: '?';
+  color: #00ffcc;
+  font-size: 1.5em;
+  font-weight: bold;
+  animation: pulse 1.2s infinite;
+}
+
+.cell.revealed::before {
+  content: '';
+  animation: none;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.2);
+  }
+}
+
 
        .cell.mine {
   background: radial-gradient(circle at center, #00ff96, #004d3f);
@@ -203,6 +227,24 @@
             height: 30px;
             margin-right: 10px;
         }
+	  .casino-alert {
+  font-size: 1.1em;
+  color: #f0b90b;
+  text-shadow: 0 0 5px #f0b90b, 0 0 10px #ffcc00;
+  animation: flicker 1s infinite;
+  font-weight: bold;
+  display: inline-block;
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    opacity: 1;
+  }
+  20%, 22%, 24%, 55% {
+    opacity: 0.3;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -448,12 +490,12 @@
   ${amount}
 `;
             
-        document.getElementById('prize-info').innerHTML = `
+   document.getElementById('prize-info').innerHTML = `
     🎉 ¡Premio reclamado!<br>
     <strong>${amount} ${prize.token}</strong><br>
     <small>Tx: 0x${Array.from({length: 16}, () => 
         Math.floor(Math.random() * 16).toString(16)).join('')}...</small><br><br>
-    <span style="color: #f0b90b;">🔒 Conecta tu wallet para reclamar tu premio.</span>
+    <span class="casino-alert">🔒 Conecta tu wallet Metamask para reclamar tu premio</span>
 `;
 
 
