@@ -247,6 +247,60 @@
   }
 }
 
+	  .footer {
+  background-color: #121212;
+  color: #e0e0e0;
+  padding: 2rem 1rem;
+  margin-top: 3rem;
+  font-size: 0.9rem;
+}
+
+.footer-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-section h3 {
+  color: #00ff96;
+  margin-bottom: 0.8rem;
+  font-size: 1.1rem;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.footer-section a {
+  color: #00d4ff;
+  text-decoration: none;
+}
+
+.footer-section a:hover {
+  text-decoration: underline;
+}
+
+.disclaimer {
+  grid-column: span 2;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.social-links li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+
   </style>
 </head>
 <body>
@@ -265,6 +319,52 @@
             <p id="prize-info"></p>
         </div>
         <div class="grid" id="grid"></div>
+
+
+	<footer class="footer">
+  <div class="footer-container">
+    <!-- FAQs -->
+    <div class="footer-section">
+      <h3>Preguntas Frecuentes (FAQ)</h3>
+      <ul>
+        <li><strong>¿Necesito conectar mi wallet?</strong> Sí, es necesario para reclamar premios y generar tu link de referido.</li>
+        <li><strong>¿Cuántos intentos tengo?</strong> Tienes 3 intentos por ronda.</li>
+        <li><strong>¿Qué pasa si gano?</strong> Se mostrará un mensaje y podrás reclamar el premio conectando tu wallet.</li>
+      </ul>
+    </div>
+
+    <!-- Contacto -->
+    <div class="footer-section">
+      <h3>Contacto</h3>
+      <ul>
+        <li>Email: soporte@tusitio.com</li>
+        <li>Telegram: <a href="https://t.me/tucanal" target="_blank">@tucanal</a></li>
+        <li>Formulario: <a href="/contacto.html">Ir al formulario</a></li>
+      </ul>
+    </div>
+
+    <!-- Redes Sociales -->
+    <div class="footer-section">
+      <h3>Síguenos</h3>
+      <ul class="social-links">
+        <li><a href="https://twitter.com/tuproyecto" target="_blank">🐦 Twitter</a></li>
+        <li><a href="https://instagram.com/tuproyecto" target="_blank">📸 Instagram</a></li>
+        <li><a href="https://discord.gg/tucomunidad" target="_blank">💬 Discord</a></li>
+      </ul>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="footer-section disclaimer">
+      <h3>Disclaimer Legal</h3>
+      <p>
+        Esta plataforma es un proyecto experimental y no constituye asesoramiento financiero. 
+        Participar implica riesgos. Asegúrate de leer nuestros <a href="/terminos.html">Términos y Condiciones</a> antes de usarla. 
+        Los premios están sujetos a verificación y cumplimiento de políticas.
+      </p>
+    </div>
+  </div>
+</footer>
+
 	
   <!-- Tu script original -->
   <script>
