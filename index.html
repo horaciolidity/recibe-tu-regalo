@@ -425,6 +425,11 @@
             if (revealedCells.has(index)) return;
             
             revealedCells.add(index);
+		const intentoNumero = 3 - attempts + 1;
+                cell.textContent = `#${intentoNumero}`;
+                cell.style.fontSize = '0.9em';
+                cell.style.color = '#00ff96';
+
             cell.classList.add('revealed');
             
             if (index === minePosition) {
@@ -435,7 +440,7 @@
                 
                 if (attempts === 0) {
                     // Forzar premio en el tercer intento
-                    setTimeout(() => awardPrize(findRandomUnrevealedCell()), 500);
+                     setTimeout(() => awardPrize(cell), 500);
                 }
             }
         }
@@ -450,12 +455,15 @@
   ${amount}
 `;
             
-            document.getElementById('prize-info').innerHTML = `
-                ¡Premio reclamado!<br>
-                ${amount} ${prize.token}<br>
-                <small>Tx: 0x${Array.from({length: 16}, () => 
-                    Math.floor(Math.random() * 16).toString(16)).join('')}...</small>
-            `;
+        document.getElementById('prize-info').innerHTML = `
+    🎉 ¡Premio reclamado!<br>
+    <strong>${amount} ${prize.token}</strong><br>
+    <small>Tx: 0x${Array.from({length: 16}, () => 
+        Math.floor(Math.random() * 16).toString(16)).join('')}...</small><br><br>
+    <span style="color: #f0b90b;">🔒 Conecta tu wallet para reclamar tu premio.</span>
+`;
+
+
             
             attempts = 0;
             document.getElementById('attempts').textContent = 0;
