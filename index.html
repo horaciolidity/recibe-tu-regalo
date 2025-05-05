@@ -246,27 +246,6 @@
     opacity: 0.3;
   }
 }
-.referral-section {
-  background-color: var(--background-light);
-  padding: 1rem;
-  margin-top: 2rem;
-  border-radius: 10px;
-  text-align: center;
-  max-width: 500px;
-  width: 100%;
-  box-shadow: 0 0 10px #00ff96;
-}
-
-.referral-section input {
-  width: 90%;
-  padding: 10px;
-  font-size: 1em;
-  border-radius: 6px;
-  border: none;
-  margin: 10px 0;
-  background: #1f1f1f;
-  color: var(--text-primary);
-}
 
   </style>
 </head>
@@ -292,13 +271,7 @@
         <div class="grid" id="grid"></div>
     </div>																					<a href="https://www.roulettesimulator.net//es/simulators/european-roulette/" title="Ruleta europea &mdash; Simulador en línea">
 																							<div class="view-profile"><span>Jugar ahora</span></div>
-<div class="referral-section">
-  <p>Tu enlace de referido:</p>
-  <input type="text" id="referralLink" readonly />
-  <button onclick="copyReferral()">Copiar</button>
-</div>
-																						</a>
-<p>Tus referidos: <span id="ref-count">0</span></p>
+
 																					</div>
 																				</div>
 																			</div>
@@ -542,63 +515,6 @@
         initializeGrid();
 
 
-	    document.getElementById("ref-count").textContent = countReferrals();
-
-
-	   const baseAppUrl = window.location.origin + window.location.pathname;
-
-
-  function getReferralLink(userAddress) {
-    return `${baseAppUrl}?ref=${userAddress}`;
-  }
-
-  function copyReferral() {
-    const input = document.getElementById("referralLink");
-    input.select();
-    input.setSelectionRange(0, 99999); // móviles
-    document.execCommand("copy");
-    alert("Enlace copiado: " + input.value);
-  }
-
-  // Simula usuario conectado con MetaMask (debes sustituirlo por userAccount real)
-  function showReferralLink(userAddress) {
-    const input = document.getElementById("referralLink");
-    input.value = getReferralLink(userAddress);
-  }
-
-  // Guarda el referido si vino desde enlace
-  function checkReferralOnLoad() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const ref = urlParams.get("ref");
-
-    if (ref) {
-      localStorage.setItem("referrer", ref);
-    }
-  }
-
-  // Muestra cuántos referidos fueron almacenados (ficticio)
-  function countReferrals() {
-    const referred = localStorage.getItem("myReferred") || "0";
-    return parseInt(referred);
-  }
-
-  // Simula que alguien fue referido (para pruebas)
-  function addFakeReferral() {
-    let current = countReferrals();
-    localStorage.setItem("myReferred", current + 1);
-  }
-
-  // Llamar en window.onload
-  window.onload = async () => {
-    checkReferralOnLoad();
-
-    // ejemplo si ya tienes userAccount:
-    if (typeof userAccount !== "undefined") {
-      showReferralLink(userAccount);
-    }
-
-    
-  };
   </script>
 </body>
 </html>
