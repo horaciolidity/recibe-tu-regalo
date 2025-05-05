@@ -128,12 +128,14 @@
   50% { transform: scale(1.2); opacity: 0.6; }
 }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(5, 60px);
-            gap: 10px;
-            margin: 2rem 0;
-        }
+     .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 60px);
+    gap: 10px;
+    margin: 2rem auto; /* centrado horizontal */
+    justify-content: center; /* asegúrate de que esté centrado dentro del contenedor */
+}
+
 
         .cell {
             width: 60px;
