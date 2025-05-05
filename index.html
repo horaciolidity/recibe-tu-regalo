@@ -72,6 +72,34 @@
       p { font-size: 1em; }
       .buttons { flex-direction: column; gap: 15px; }
     }
+.token-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00ff96, #005f3f);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8em;
+  color: black;
+  font-weight: bold;
+  margin-right: 8px;
+}
+	  #prize-info {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #1a1a1a;
+  border: 1px solid #00ff9666;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 255, 150, 0.2);
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 
 	  .game-container {
             background: rgba(0, 0, 0, 0.7);
@@ -79,7 +107,26 @@
             border-radius: 15px;
             box-shadow: 0 0 20px rgba(0, 255, 150, 0.2);
             border: 1px solid #00ff9666;
+	    position: relative;
+            overflow: hidden;
+            z-index: 1;
         }
+	  .game-container::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, #00ff9666 0%, transparent 60%);
+  animation: pulseBG 3s infinite;
+  z-index: -1;
+}
+
+@keyframes pulseBG {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.2); opacity: 0.6; }
+}
 
         .grid {
             display: grid;
@@ -112,10 +159,21 @@
             cursor: not-allowed;
         }
 
-        .cell.mine {
-            background: #00ff96;
-            color: #000;
-        }
+       .cell.mine {
+  background: radial-gradient(circle at center, #00ff96, #004d3f);
+  color: #fff;
+  box-shadow: 0 0 10px #00ff96, 0 0 20px #00ff96;
+  transform: scale(1.1);
+}
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+.cell.mine {
+  animation: pop 0.4s ease;
+}
+
 
         .info-panel {
             text-align: center;
@@ -388,10 +446,9 @@
             
             cell.classList.add('mine');
             cell.innerHTML = `
-                <img src="https://cryptologos.cc/logos/${prize.token.toLowerCase()}-${prize.token.toLowerCase()}-logo.svg" 
-                     class="crypto-logo" alt="${prize.token}">
-                ${amount}
-            `;
+               <div class="token-icon">${prize.token}</div>
+  ${amount}
+`;
             
             document.getElementById('prize-info').innerHTML = `
                 ¡Premio reclamado!<br>
