@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Gift Cripto | Web3 en Optimism</title>
   <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+<audio id="winSound" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-win-sound-132.mp3"></audio>
+
   <style>
     :root {
       --primary-color: #f0b90b;
@@ -369,6 +371,7 @@
 </head>
 <body>
   <h1>🎁 Gift Cripto Web3</h1>
+
   <p>Conéctate con tu wallet y completa el KYC para reclamar tokens gratis en la red Optimism.</p>
 	  <p> Referidos acreditados en el acto </p>
 
@@ -669,29 +672,52 @@ function handleCellClick(event) {
 }
 
  function awardPrize(cell) {
-  const prize = cryptoPrizes[Math.floor(Math.random() * cryptoPrizes.length)];
-  const amount = prize.amount();
+  const weightedPrizes = [
+    { token: 'USDT', min: 10, max: 100, weight: 30 },
+    { token: 'USDC', min: 5, max: 75, weight: 25 },
+    { token: 'WLD', min: 1, max: 10, weight: 20 },
+    { token: 'DAI', min: 15, max: 90, weight: 15 },
+    { token: 'OP', min: 2, max: 15, weight: 10 }
+  ];
+
+  const totalWeight = weightedPrizes.reduce((acc, p) => acc + p.weight, 0);
+  const randomPick = Math.random() * totalWeight;
+  let accumulated = 0;
+  let selected;
+
+  for (const prize of weightedPrizes) {
+    accumulated += prize.weight;
+    if (randomPick <= accumulated) {
+      selected = prize;
+      break;
+    }
+  }
+
+  const amount = (Math.random() * (selected.max - selected.min) + selected.min).toFixed(4);
+  const txId = "0x" + [...Array(16)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 
   cell.classList.add('mine');
   cell.innerHTML = `
-      <div class="token-icon">${prize.token}</div>
-      ${amount}
+    <div class="token-icon">${selected.token}</div>
+    ${amount}
   `;
 
   document.getElementById('prize-info').innerHTML = `
-      🎉 ¡Conecta para reclamar!<br>
-      <strong>${amount} ${prize.token}</strong><br>
-      <small>Tx: 0x${Array.from({length: 16}, () =>
-          Math.floor(Math.random() * 16).toString(16)).join('')}...</small><br><br>
-      <span class="casino-alert">🔒 Conecta tu wallet Metamask para reclamar tu premio</span>
+    <div class="prize-animation" style="font-size: 1.2em;">
+      🎉 <strong>${amount} ${selected.token}</strong> ganados<br>
+      <small>TX ID: ${txId}...</small><br><br>
+      <div class="casino-alert">🚀 ¡Conecta tu wallet Metamask para reclamar tu premio ahora!</div>
+    </div>
   `;
+document.getElementById("winSound").play();
+if (navigator.vibrate) {
+  navigator.vibrate([100, 50, 100]);
+}
 
-  updateStats(amount); // <== AÑADIDO
-
+  updateStats(amount);
   attempts = 0;
   document.getElementById('attempts').textContent = 0;
 }
-
 
 
         function findRandomUnrevealedCell() {
