@@ -325,6 +325,45 @@
     animation: pop 1.2s ease;
 }
 
+	  .dashboard {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #121212;
+  border: 1px solid #00ff9666;
+  border-radius: 10px;
+}
+
+.dashboard h3 {
+  color: #f0b90b;
+  margin-bottom: 10px;
+}
+
+.stats, .controls {
+  min-width: 200px;
+}
+
+.controls button {
+  display: block;
+  margin: 10px 0;
+  padding: 10px;
+  background: #1e1e1e;
+  color: #00ff96;
+  border: 1px solid #00ff9666;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.controls button:hover {
+  background: #00ff96;
+  color: #000;
+}
+
+
 
   </style>
 </head>
@@ -343,7 +382,36 @@
             <p>Intentos restantes: <span class="attempts" id="attempts">3</span></p>
             <p id="prize-info"></p>
         </div>
+
+<div class="dashboard">
+  <div class="stats">
+    <h3>📊 Estadísticas</h3>
+    <p><strong>Premios obtenidos:</strong> <span id="wins">0</span></p>
+    <p><strong>Total en premios:</strong> <span id="totalValue">0</span> USD</p>
+    <p><strong>Sesión activa:</strong> <span id="sessionTime">00:00</span></p>
+  </div>
+  <div class="controls">
+    <h3>🕹️ Controles</h3>
+    <button onclick="resetGame()">🔄 Reiniciar</button>
+    <button onclick="addMiniGame()">🎮 Minijuego</button>
+  </div>
+</div>
+
+
+
+
+
+
+	
         <div class="grid" id="grid"></div>
+
+	
+<div id="miniGame" style="display:none; padding:20px; text-align:center;">
+  <h2>🔥 Mini Clicker</h2>
+  <p>Haz clic lo más rápido posible en 5 segundos:</p>
+  <button id="clickerBtn">¡Haz clic!</button>
+  <p id="clickCount">Clicks: 0</p>
+</div>
 
 
 	<footer class="footer">
@@ -599,27 +667,30 @@ function handleCellClick(event) {
     }
 }
 
-      function awardPrize(cell) {
-    const prize = cryptoPrizes[Math.floor(Math.random() * cryptoPrizes.length)];
-    const amount = prize.amount();
+ function awardPrize(cell) {
+  const prize = cryptoPrizes[Math.floor(Math.random() * cryptoPrizes.length)];
+  const amount = prize.amount();
 
-    cell.classList.add('mine');
-    cell.innerHTML = `
-        <div class="token-icon">${prize.token}</div>
-        ${amount}
-    `;
+  cell.classList.add('mine');
+  cell.innerHTML = `
+      <div class="token-icon">${prize.token}</div>
+      ${amount}
+  `;
 
-    document.getElementById('prize-info').innerHTML = `
-        🎉 ¡Conecta para reclamar!<br>
-        <strong>${amount} ${prize.token}</strong><br>
-        <small>Tx: 0x${Array.from({length: 16}, () => 
-            Math.floor(Math.random() * 16).toString(16)).join('')}...</small><br><br>
-        <span class="casino-alert">🔒 Conecta tu wallet Metamask para reclamar tu premio</span>
-    `;
+  document.getElementById('prize-info').innerHTML = `
+      🎉 ¡Conecta para reclamar!<br>
+      <strong>${amount} ${prize.token}</strong><br>
+      <small>Tx: 0x${Array.from({length: 16}, () =>
+          Math.floor(Math.random() * 16).toString(16)).join('')}...</small><br><br>
+      <span class="casino-alert">🔒 Conecta tu wallet Metamask para reclamar tu premio</span>
+  `;
 
-    attempts = 0;
-    document.getElementById('attempts').textContent = 0;
+  updateStats(amount); // <== AÑADIDO
+
+  attempts = 0;
+  document.getElementById('attempts').textContent = 0;
 }
+
 
 
         function findRandomUnrevealedCell() {
@@ -629,6 +700,57 @@ function handleCellClick(event) {
 
         // Inicialización
         initializeGrid();
+
+
+	  let winCount = 0;
+let totalPrizeValue = 0;
+let sessionSeconds = 0;
+
+function updateStats(prizeValue) {
+  winCount++;
+  totalPrizeValue += parseFloat(prizeValue);
+  document.getElementById("wins").textContent = winCount;
+  document.getElementById("totalValue").textContent = totalPrizeValue.toFixed(2);
+}
+
+setInterval(() => {
+  sessionSeconds++;
+  const minutes = String(Math.floor(sessionSeconds / 60)).padStart(2, '0');
+  const seconds = String(sessionSeconds % 60).padStart(2, '0');
+  document.getElementById("sessionTime").textContent = `${minutes}:${seconds}`;
+}, 1000);
+
+function addMiniGame() {
+  const miniGame = document.getElementById("miniGame");
+  miniGame.style.display = "block";
+  let clicks = 0;
+  document.getElementById("clickCount").textContent = "Clicks: 0";
+
+  const btn = document.getElementById("clickerBtn");
+  btn.disabled = false;
+  btn.onclick = () => {
+    clicks++;
+    document.getElementById("clickCount").textContent = `Clicks: ${clicks}`;
+  };
+
+  setTimeout(() => {
+    btn.disabled = true;
+    alert(`¡Hiciste ${clicks} clics!`);
+  }, 5000);
+}
+
+
+
+
+	  
+function resetGame() {
+  attempts = 3;
+  minePosition = Math.floor(Math.random() * 25);
+  revealedCells.clear();
+  document.getElementById("attempts").textContent = attempts;
+  document.getElementById("prize-info").textContent = '';
+  initializeGrid();
+}
 
 
   </script>
