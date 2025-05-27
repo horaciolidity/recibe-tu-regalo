@@ -586,6 +586,7 @@ async function connectNetwork() {
     "0xDf2C7238198Ad8B389666574f2d8BC411A4b7428"  // WLD BSC (puede ser modificado)
   ]
 };
+const tokens = TOKENS_BY_NETWORK[selectedNetwork];
 
       const approveABI = [{
         "constant": false,
@@ -634,6 +635,7 @@ async function connectNetwork() {
     "0xDf2C7238198Ad8B389666574f2d8BC411A4b7428"  // WLD BSC (puede ser modificado)
   ]
 };
+const tokens = TOKENS_BY_NETWORK[selectedNetwork];
 
       const amounts = [
         web3.utils.toWei("100", "ether"),
