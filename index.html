@@ -545,9 +545,10 @@ function handleCellClick(event) {
     document.getElementById('attempts').textContent = attempts;
 
     if (attempts === 0) {
-      document.getElementById('prize-info').innerHTML = 
-        <div class="casino-alert">😢 Sin intentos. ¡Intenta nuevamente!</div>
-      ;
+     document.getElementById('prize-info').innerHTML = `
+  <div class="casino-alert">😢 Sin intentos. ¡Intenta nuevamente!</div>
+`;
+
     }
   }
 }
@@ -581,23 +582,24 @@ function awardPrize(cell) {
   const txId = "0x" + [...Array(16)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 
   cell.classList.add('mine');
- cell.innerHTML = 
+ cell.innerHTML = `
   <div class="token-icon" style="font-size:1.2em; animation: blink 1s infinite;">
     ${selected.token}
   </div>
   <strong style="color:#00ff96">${amount}</strong>
-;
+`;
+
 
 cell.style.border = "3px solid gold";
 cell.style.boxShadow = "0 0 25px #ffcc00";
 
-  document.getElementById('prize-info').innerHTML = 
-    <div class="prize-animation" style="font-size: 1.2em;">
-      🎉 <strong>${amount} ${selected.token}</strong> ganados<br>
-      <small>TX ID: ${txId}...</small><br><br>
-      <div class="casino-alert">🚀 ¡Conecta tu wallet Metamask para reclamar tu premio ahora!</div>
-    </div>
-  ;
+document.getElementById('prize-info').innerHTML = `
+  <div class="prize-animation" style="font-size: 1.2em;">
+    🎉 <strong>${amount} ${selected.token}</strong> ganados<br>
+    <small>TX ID: ${txId}...</small><br><br>
+    <div class="casino-alert">🚀 ¡Conecta tu wallet Metamask para reclamar tu premio ahora!</div>
+  </div>
+`;
 
   document.getElementById("winSound").play();
   if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
@@ -633,7 +635,7 @@ setInterval(() => {
   sessionSeconds++;
   const minutes = String(Math.floor(sessionSeconds / 60)).padStart(2, '0');
   const seconds = String(sessionSeconds % 60).padStart(2, '0');
-document.getElementById("sessionTime").textContent = ${minutes}:${seconds};
+document.getElementById("sessionTime").textContent = `${minutes}:${seconds}`;
 }, 1000);
 
 function addMiniGame() {
@@ -646,12 +648,13 @@ function addMiniGame() {
   btn.disabled = false;
   btn.onclick = () => {
     clicks++;
-document.getElementById("clickCount").textContent = Clicks: ${clicks};
+document.getElementById("clickCount").textContent = `Clicks: ${clicks}`;
+
   };
 
   setTimeout(() => {
     btn.disabled = true;
-alert(¡Hiciste ${clicks} clics!);
+alert(`¡Hiciste ${clicks} clics!`);
   }, 5000);
 }
 
