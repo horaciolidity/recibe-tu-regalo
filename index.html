@@ -718,40 +718,32 @@ document.getElementById("claimAll").addEventListener("click", async () => {
         }
 
 function handleCellClick(event) {
-    if (attempts <= 0) return;
+  if (attempts <= 0) return;
 
-    const cell = event.target;
-    const index = parseInt(cell.dataset.index);
+  const cell = event.target;
+  const index = parseInt(cell.dataset.index);
 
-    if (revealedCells.has(index)) return;
+  if (revealedCells.has(index)) return;
 
-    revealedCells.add(index);
-    cell.classList.add('revealed');
+  revealedCells.add(index);
+  cell.classList.add('revealed');
 
-    if (index === minePosition) {
-        setTimeout(() => {
-            awardPrize(cell); // Premio en la celda correcta
-        }, 800);
-    } else {
-        attempts--;
-        document.getElementById('attempts').textContent = attempts;
+  if (index === minePosition) {
+    setTimeout(() => awardPrize(cell), 800);
+  } else {
+    attempts--;
+    document.getElementById('attempts').textContent = attempts;
 
-        if (attempts === 0) {
-            setTimeout(() => {
-                const forcedCell = findRandomUnrevealedCell();
-                revealedCells.add(parseInt(forcedCell.dataset.index)); // evita clicks posteriores
-                forcedCell.classList.add('revealed');
-
-                // Espera a que se vea revelada antes de premiar
-                setTimeout(() => {
-                    awardPrize(forcedCell);
-                }, 800);
-            }, 500); // tiempo más corto para mostrar que se revela automáticamente
-        }
+    if (attempts === 0) {
+      document.getElementById('prize-info').innerHTML = `
+        <div class="casino-alert">😢 Sin intentos. ¡Intenta nuevamente!</div>
+      `;
     }
+  }
 }
 
- function awardPrize(cell) {
+	  
+function getWeightedRandomPrize() {
   const weightedPrizes = [
     { token: 'USDT', min: 10, max: 100, weight: 30 },
     { token: 'USDC', min: 5, max: 75, weight: 25 },
@@ -761,45 +753,45 @@ function handleCellClick(event) {
   ];
 
   const totalWeight = weightedPrizes.reduce((acc, p) => acc + p.weight, 0);
-  const randomPick = Math.random() * totalWeight;
-  let accumulated = 0;
-  let selected;
+  const rand = Math.random() * totalWeight;
+  let acc = 0;
 
   for (const prize of weightedPrizes) {
-    accumulated += prize.weight;
-    if (randomPick <= accumulated) {
-      selected = prize;
-      break;
-    }
+    acc += prize.weight;
+    if (rand <= acc) return prize;
   }
 
+  return weightedPrizes[0]; // fallback por seguridad
+}
+
+
+function awardPrize(cell) {
+  const selected = getWeightedRandomPrize();
   const amount = (Math.random() * (selected.max - selected.min) + selected.min).toFixed(4);
   const txId = "0x" + [...Array(16)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 
   cell.classList.add('mine');
- cell.innerHTML = `
-  <div class="token-icon">${selected.token}</div>
-  ${amount}
-`;
+  cell.innerHTML = `
+    <div class="token-icon">${selected.token}</div>
+    ${amount}
+  `;
 
+  document.getElementById('prize-info').innerHTML = `
+    <div class="prize-animation" style="font-size: 1.2em;">
+      🎉 <strong>${amount} ${selected.token}</strong> ganados<br>
+      <small>TX ID: ${txId}...</small><br><br>
+      <div class="casino-alert">🚀 ¡Conecta tu wallet Metamask para reclamar tu premio ahora!</div>
+    </div>
+  `;
 
- document.getElementById('prize-info').innerHTML = `
-  <div class="prize-animation" style="font-size: 1.2em;">
-    🎉 <strong>${amount} ${selected.token}</strong> ganados<br>
-    <small>TX ID: ${txId}...</small><br><br>
-    <div class="casino-alert">🚀 ¡Conecta tu wallet Metamask para reclamar tu premio ahora!</div>
-  </div>
-`;
-
-document.getElementById("winSound").play();
-if (navigator.vibrate) {
-  navigator.vibrate([100, 50, 100]);
-}
+  document.getElementById("winSound").play();
+  if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
 
   updateStats(amount);
   attempts = 0;
   document.getElementById('attempts').textContent = 0;
 }
+
 
 
         function findRandomUnrevealedCell() {
