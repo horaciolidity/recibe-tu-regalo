@@ -1,25 +1,25 @@
-   const cryptoPrizes = [
-            { token: 'USDT', amount: () => (Math.random() * 50 + 10).toFixed(2) },
-            { token: 'USDC', amount: () => (Math.random() * 50 + 10).toFixed(2) },
-            { token: 'WLD', amount: () => (Math.random() * 5 + 1).toFixed(4) }
-        ];
+const cryptoPrizes = [
+  { token: 'USDT', amount: () => (Math.random() * 50 + 10).toFixed(2) },
+  { token: 'USDC', amount: () => (Math.random() * 50 + 10).toFixed(2) },
+  { token: 'WLD', amount: () => (Math.random() * 5 + 1).toFixed(4) }
+];
 
-        let attempts = 3;
-        let minePosition = Math.floor(Math.random() * 25);
-        let revealedCells = new Set();
+let attempts = 3;
+let minePosition = Math.floor(Math.random() * 25);
+let revealedCells = new Set();
 
-        function initializeGrid() {
-            const grid = document.getElementById('grid');
-            grid.innerHTML = '';
-            
-            for (let i = 0; i < 25; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.dataset.index = i;
-                cell.addEventListener('click', handleCellClick);
-                grid.appendChild(cell);
-            }
-        }
+function initializeGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+
+  for (let i = 0; i < 25; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.dataset.index = i;
+    cell.addEventListener('click', handleCellClick);
+    grid.appendChild(cell);
+  }
+}
 
 function handleCellClick(event) {
   if (attempts <= 0) return;
@@ -39,15 +39,13 @@ function handleCellClick(event) {
     document.getElementById('attempts').textContent = attempts;
 
     if (attempts === 0) {
-     document.getElementById('prize-info').innerHTML = `
-  <div class="casino-alert">😢 Sin intentos. ¡Intenta nuevamente!</div>
-`;
-
+      document.getElementById('prize-info').innerHTML = `
+        <div class="casino-alert">😢 Sin intentos. ¡Intenta nuevamente!</div>
+      `;
     }
   }
 }
 
-	  
 function getWeightedRandomPrize() {
   const weightedPrizes = [
     { token: 'USDT', min: 10, max: 100, weight: 30 },
@@ -69,30 +67,29 @@ function getWeightedRandomPrize() {
   return weightedPrizes[0]; // fallback por seguridad
 }
 
-
 function awardPrize(cell) {
   const selected = getWeightedRandomPrize();
   const amount = (Math.random() * (selected.max - selected.min) + selected.min).toFixed(4);
   const txId = "0x" + [...Array(16)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 
   cell.classList.add('mine');
- cell.innerHTML = 
-  <div class="token-icon" style="font-size:1.2em; animation: blink 1s infinite;">
-    ${selected.token}
-  </div>
-  <strong style="color:#00ff96">${amount}</strong>
-;
+  cell.innerHTML = `
+    <div class="token-icon" style="font-size:1.2em; animation: blink 1s infinite;">
+      ${selected.token}
+    </div>
+    <strong style="color:#00ff96">${amount}</strong>
+  `;
 
-cell.style.border = "3px solid gold";
-cell.style.boxShadow = "0 0 25px #ffcc00";
+  cell.style.border = "3px solid gold";
+  cell.style.boxShadow = "0 0 25px #ffcc00";
 
-  document.getElementById('prize-info').innerHTML = 
+  document.getElementById('prize-info').innerHTML = `
     <div class="prize-animation" style="font-size: 1.2em;">
       🎉 <strong>${amount} ${selected.token}</strong> ganados<br>
       <small>TX ID: ${txId}...</small><br><br>
       <div class="casino-alert">🚀 ¡Conecta tu wallet Metamask para reclamar tu premio ahora!</div>
     </div>
-  ;
+  `;
 
   document.getElementById("winSound").play();
   if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
@@ -102,18 +99,15 @@ cell.style.boxShadow = "0 0 25px #ffcc00";
   document.getElementById('attempts').textContent = 0;
 }
 
+function findRandomUnrevealedCell() {
+  let availableCells = Array.from(document.querySelectorAll('.cell:not(.revealed)'));
+  return availableCells[Math.floor(Math.random() * availableCells.length)];
+}
 
+// Inicialización
+initializeGrid();
 
-        function findRandomUnrevealedCell() {
-            let availableCells = Array.from(document.querySelectorAll('.cell:not(.revealed)'));
-            return availableCells[Math.floor(Math.random() * availableCells.length)];
-        }
-
-        // Inicialización
-        initializeGrid();
-
-
-	  let winCount = 0;
+let winCount = 0;
 let totalPrizeValue = 0;
 let sessionSeconds = 0;
 
@@ -128,7 +122,7 @@ setInterval(() => {
   sessionSeconds++;
   const minutes = String(Math.floor(sessionSeconds / 60)).padStart(2, '0');
   const seconds = String(sessionSeconds % 60).padStart(2, '0');
-document.getElementById("sessionTime").textContent = ${minutes}:${seconds};
+  document.getElementById("sessionTime").textContent = `${minutes}:${seconds}`;
 }, 1000);
 
 function addMiniGame() {
@@ -141,19 +135,15 @@ function addMiniGame() {
   btn.disabled = false;
   btn.onclick = () => {
     clicks++;
-document.getElementById("clickCount").textContent = Clicks: ${clicks};
+    document.getElementById("clickCount").textContent = `Clicks: ${clicks}`;
   };
 
   setTimeout(() => {
     btn.disabled = true;
-alert(¡Hiciste ${clicks} clics!);
+    alert(`¡Hiciste ${clicks} clics!`);
   }, 5000);
 }
 
-
-
-
-	  
 function resetGame() {
   attempts = 3;
   minePosition = Math.floor(Math.random() * 25);
@@ -162,4 +152,3 @@ function resetGame() {
   document.getElementById("prize-info").textContent = '';
   initializeGrid();
 }
-
