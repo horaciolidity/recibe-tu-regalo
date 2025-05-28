@@ -385,6 +385,10 @@
   border-color: #f0b90b;
   box-shadow: 0 0 12px #f0b90b;
 }
+@keyframes blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
 
 
   </style>
@@ -441,10 +445,13 @@
 
 
 
+<div class="game-container">
+  <h2 style="color: #f0b90b; margin-bottom: 1rem;">💎 Toca una casilla para ganar cripto 💎</h2>
+  <div class="grid" id="grid"></div>
+</div>
 
 
 	
-        <div class="grid" id="grid"></div>
 
 	
 
@@ -771,10 +778,15 @@ function awardPrize(cell) {
   const txId = "0x" + [...Array(16)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 
   cell.classList.add('mine');
-  cell.innerHTML = `
-    <div class="token-icon">${selected.token}</div>
-    ${amount}
-  `;
+ cell.innerHTML = `
+  <div class="token-icon" style="font-size:1.2em; animation: blink 1s infinite;">
+    ${selected.token}
+  </div>
+  <strong style="color:#00ff96">${amount}</strong>
+`;
+
+cell.style.border = "3px solid gold";
+cell.style.boxShadow = "0 0 25px #ffcc00";
 
   document.getElementById('prize-info').innerHTML = `
     <div class="prize-animation" style="font-size: 1.2em;">
