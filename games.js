@@ -1,6 +1,7 @@
+
 const CELLS_TOTAL = 25;
 const MAX_ATTEMPTS = 5;
-const RECHARGE_INTERVAL = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+const RECHARGE_INTERVAL = 24 * 60 * 60 * 1000; // 24 hs
 
 let revealedCells = new Set();
 let prizePositions = [];
@@ -8,9 +9,13 @@ let winCount = 0;
 let totalPrizeValue = 0;
 let sessionSeconds = 0;
 
-// --- Sistema de créditos diarios ---
+// --- Créditos diarios ---
+function getCreditsData() {
+  return JSON.parse(localStorage.getItem("dailyCredits"));
+}
+
 function getCredits() {
-  const data = JSON.parse(localStorage.getItem("dailyCredits"));
+  const data = getCreditsData();
   const now = Date.now();
 
   if (!data || now - data.timestamp >= RECHARGE_INTERVAL) {
@@ -18,12 +23,11 @@ function getCredits() {
     localStorage.setItem("dailyCredits", JSON.stringify(newData));
     return MAX_ATTEMPTS;
   }
-
   return data.credits;
 }
 
 function updateCredits(value) {
-  const data = JSON.parse(localStorage.getItem("dailyCredits")) || { credits: MAX_ATTEMPTS, timestamp: Date.now() };
+  const data = getCreditsData() || { credits: MAX_ATTEMPTS, timestamp: Date.now() };
   data.credits = value;
   localStorage.setItem("dailyCredits", JSON.stringify(data));
 }
@@ -47,7 +51,7 @@ function initializeGrid() {
   document.getElementById('prize-info').textContent = '';
 }
 
-// --- Colocar premios aleatorios ---
+// --- Colocar premios ---
 function placePrizes() {
   let positions = [];
   while (positions.length < 3) {
@@ -60,7 +64,10 @@ function placePrizes() {
 // --- Click en casillero ---
 function handleCellClick(event) {
   const credits = getCredits();
-  if (credits <= 0) return;
+  if (credits <= 0) {
+    showCountdown();
+    return;
+  }
 
   const cell = event.target;
   const index = parseInt(cell.dataset.index);
@@ -111,13 +118,14 @@ function awardPrize(cell, index) {
     </div>
   `;
 
-  document.getElementById("winSound").play();
+  const audio = document.getElementById("winSound");
+  if (audio) audio.play();
   if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
 
   updateStats(amount);
 }
 
-// --- Revelar todos los premios no acertados ---
+// --- Revelar todos los premios ---
 function revealAllPrizes() {
   prizePositions.forEach((pos, idx) => {
     const cell = document.querySelector(`.cell[data-index="${pos}"]`);
@@ -142,7 +150,16 @@ function revealAllPrizes() {
 
 // --- Reiniciar juego ---
 function resetGame() {
+  const data = getCreditsData();
+  const now = Date.now();
+
+  if (data && now - data.timestamp >= RECHARGE_INTERVAL) {
+    localStorage.setItem("dailyCredits", JSON.stringify({ credits: MAX_ATTEMPTS, timestamp: now }));
+  }
+
   initializeGrid();
+  document.getElementById('attempts').textContent = getCredits();
+  document.getElementById('countdown').textContent = '';
 }
 
 // --- Estadísticas ---
@@ -153,6 +170,23 @@ function updateStats(prizeValue) {
   document.getElementById("totalValue").textContent = totalPrizeValue.toFixed(2);
 }
 
+// --- Cuenta regresiva ---
+function showCountdown() {
+  const data = getCreditsData();
+  if (!data) return;
+
+  const now = Date.now();
+  const timeLeft = RECHARGE_INTERVAL - (now - data.timestamp);
+  if (timeLeft <= 0) return;
+
+  const hours = Math.floor(timeLeft / 3600000);
+  const minutes = Math.floor((timeLeft % 3600000) / 60000);
+  const seconds = Math.floor((timeLeft % 60000) / 1000);
+
+  document.getElementById('countdown').textContent = `⏳ Tiempo para nuevos intentos: ${hours}h ${minutes}m ${seconds}s`;
+}
+
+// --- Tiempo de sesión ---
 setInterval(() => {
   sessionSeconds++;
   const minutes = String(Math.floor(sessionSeconds / 60)).padStart(2, '0');
@@ -160,5 +194,6 @@ setInterval(() => {
   document.getElementById("sessionTime").textContent = `${minutes}:${seconds}`;
 }, 1000);
 
-// --- Inicializar al cargar ---
+// --- Inicializar ---
 initializeGrid();
+
