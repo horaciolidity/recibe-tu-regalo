@@ -39,9 +39,10 @@ function handleCellClick(event) {
     document.getElementById('attempts').textContent = attempts;
 
     if (attempts === 0) {
-      document.getElementById('prize-info').innerHTML = 
-        <div class="casino-alert">😢 Sin intentos. ¡Intenta nuevamente!</div>
-      ;
+     document.getElementById('prize-info').innerHTML = `
+  <div class="casino-alert">😢 Sin intentos. ¡Intenta nuevamente!</div>
+`;
+
     }
   }
 }
