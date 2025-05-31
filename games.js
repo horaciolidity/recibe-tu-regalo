@@ -1,7 +1,8 @@
 
 const CELLS_TOTAL = 25;
-const MAX_ATTEMPTS = 5;
-const RECHARGE_INTERVAL = 24 * 60 * 60 * 1000;
+const MAX_ATTEMPTS = 6;
+const RECHARGE_INTERVAL = 60 * 60 * 1000; // 1 hora
+
 
 let revealedCells = new Set();
 let prizePositions = [];
