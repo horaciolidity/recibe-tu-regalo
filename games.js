@@ -86,9 +86,9 @@ function handleCellClick(event) {
 
 function getPrizeByIndex(index) {
   const prizeList = [
-    { token: 'USDT', min: 5, max: 50 },
-    { token: 'USDC', min: 5, max: 60 },
-    { token: 'WLD', min: 1, max: 10 }
+    { token: 'USDT', min: 0.50, max: 7.88 },
+    { token: 'USDC', min: 1, max: 11.66 },
+    { token: 'WLD', min: 0.1, max: 1.77 }
   ];
   return prizeList[index];
 }
