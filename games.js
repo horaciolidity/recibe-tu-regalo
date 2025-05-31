@@ -180,38 +180,6 @@ function copyLink() {
   alert("¡Enlace copiado al cosmos!");
 }
 
-let balance = 0;
-
-  function kick() {
-    const ball = document.getElementById('ball');
-    const result = document.getElementById('result');
-    const balanceDisplay = document.getElementById('balance');
-
-    // Reiniciar posición
-    ball.style.bottom = "0";
-    ball.style.left = "50%";
-
-    // Generar dirección aleatoria del tiro
-    const direction = Math.random();
-    const goLeft = Math.random() < 0.5;
-
-    setTimeout(() => {
-      ball.style.bottom = "60px";
-      ball.style.left = goLeft ? "20%" : "80%";
-
-      // Determinar si fue gol (70% de probabilidad)
-      const isGoal = direction > 0.3;
-      if (isGoal) {
-        result.textContent = "¡Gol! +1 WLD";
-        balance += 1;
-      } else {
-        result.textContent = "¡Atajó el arquero!";
-      }
-
-      balanceDisplay.textContent = "WLD: " + balance;
-    }, 100);
-  }
-
 
 
 
