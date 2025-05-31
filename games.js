@@ -165,6 +165,20 @@ function getDetailedSummary() {
   resumen += '<br>🔗 <strong>Conecta tu wallet (MetaMask) para reclamar estos tokens.</strong>';
   return resumen;
 }
+function copyLink() {
+  const input = document.getElementById("refLink");
+  input.select();
+  input.setSelectionRange(0, 99999); // For mobile
+  document.execCommand("copy");
+
+  // Reproduce sonido
+  const sound = document.getElementById("copySound");
+  sound.play();
+
+  // Feedback visual
+  alert("¡Enlace copiado al cosmos!");
+}
+
 
 function showCountdown() {
   const data = getCreditsData();
