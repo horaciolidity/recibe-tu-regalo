@@ -363,12 +363,3 @@ button:hover {
   text-align: center;
 }
 
- .game-wrapper {
-      width: 100vw;
-      height: 35vh; /* 35% del alto de la ventana */
-      overflow: hidden;
-    }
-
-    .game-wrapper script {
-      width: 100%;
-      height: 100%;
