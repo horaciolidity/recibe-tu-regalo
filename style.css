@@ -16,15 +16,17 @@ body {
   font-family: 'Arial Black', sans-serif;
   background-color: var(--background-dark);
   color: var(--text-primary);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   min-height: 100vh;
   padding: 20px;
-  text-align: center;
   background-image: linear-gradient(145deg, #001f3f, #003366);
 }
+
+.wrapper {
+  width: 80%;
+  margin: 0 auto;
+  text-align: center;
+}
+
 
 h1 {
   font-size: 3em;
