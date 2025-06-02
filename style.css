@@ -1,9 +1,13 @@
 :root {
-  --primary-color: #e10600; /* rojo Superman */
-  --accent-color: #ffd700;  /* dorado brillante */
-  --background-dark: #001f3f; /* azul oscuro */
-  --background-light: #003366;
-  --text-primary: #ffffff;
+  --primary-color: #F0B90B;
+  --accent-color: #F0B90B;
+  --background-dark: #181A20;
+  --background-light: #2B3139;
+  --text-primary: #EAECEF;
+  --text-secondary: #848E9C;
+  --card-bg: #2B3139;
+  --bg-dark: #181A20;
+  --primary: #F0B90B;
 }
 
 * {
@@ -13,7 +17,7 @@
 }
 
 body {
-  font-family: 'Arial Black', sans-serif;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
   background-color: var(--background-dark);
   color: var(--text-primary);
   display: flex;
@@ -23,23 +27,19 @@ body {
   min-height: 100vh;
   padding: 20px;
   text-align: center;
-  background-image: linear-gradient(145deg, #001f3f, #003366);
 }
-
-
 
 h1 {
   font-size: 3em;
   color: var(--accent-color);
   margin-bottom: 10px;
-  text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
 }
 
 p {
   font-size: 1.2em;
   margin-bottom: 30px;
   max-width: 600px;
-  color: #ccc;
+  color: var(--text-secondary);
 }
 
 .buttons {
@@ -51,19 +51,19 @@ p {
 
 button {
   background-color: var(--primary-color);
-  color: #fff;
-  border: 2px solid var(--accent-color);
+  color: #000;
+  border: none;
   padding: 14px 28px;
-  border-radius: 10px;
+  border-radius: 8px;
   font-weight: bold;
   font-size: 1em;
   cursor: pointer;
   transition: 0.3s;
-  box-shadow: 0 0 15px var(--accent-color);
+  box-shadow: 0 0 10px rgba(240, 185, 11, 0.5);
 }
 
 button:hover {
-  background-color: #ff2f2f;
+  background-color: #e0a800;
   transform: scale(1.05);
 }
 
@@ -77,12 +77,12 @@ button:hover {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: radial-gradient(circle, #ff0000, #e10600);
+  background: radial-gradient(circle, var(--accent-color), var(--primary-color));
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.8em;
-  color: #fff;
+  color: #000;
   font-weight: bold;
   margin-right: 8px;
 }
@@ -90,10 +90,10 @@ button:hover {
 #prize-info {
   margin-top: 1rem;
   padding: 1rem;
-  background: #002244;
+  background: var(--background-light);
   border: 1px solid var(--accent-color);
   border-radius: 10px;
-  box-shadow: 0 0 15px var(--accent-color);
+  box-shadow: 0 0 10px var(--accent-color);
   animation: fadeIn 0.6s ease-in-out;
 }
 
@@ -103,7 +103,7 @@ button:hover {
 }
 
 .game-container {
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(43, 49, 57, 0.85);
   padding: 2rem;
   border-radius: 15px;
   box-shadow: 0 0 25px var(--primary-color);
@@ -141,7 +141,7 @@ button:hover {
 .cell {
   width: 60px;
   height: 60px;
-  background: #004080;
+  background: var(--card-bg);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -149,16 +149,16 @@ button:hover {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 2px solid #0066cc;
+  border: 2px solid var(--accent-color);
 }
 
 .cell:hover {
   transform: scale(1.05);
-  background: #0059b3;
+  background: #3A4A5A;
 }
 
 .cell.revealed {
-  background: #001a33;
+  background: #1D1D1D;
   cursor: not-allowed;
 }
 
@@ -181,9 +181,9 @@ button:hover {
 }
 
 .cell.mine {
-  background: radial-gradient(circle, #ff0000, #cc0000);
-  color: #fff;
-  box-shadow: 0 0 15px red;
+  background: radial-gradient(circle, #F0B90B, #d9a500);
+  color: #000;
+  box-shadow: 0 0 10px var(--accent-color);
   transform: scale(1.1);
   animation: pop 0.4s ease;
 }
@@ -192,6 +192,12 @@ button:hover {
   0% { transform: scale(1); }
   50% { transform: scale(1.2); }
   100% { transform: scale(1); }
+}
+
+.cell.revealed:not(.mine)::before {
+  content: '✖';
+  color: var(--accent-color);
+  opacity: 0.7;
 }
 
 .info-panel {
@@ -213,23 +219,9 @@ button:hover {
   font-size: 1.2em;
 }
 
-.casino-alert {
-  font-size: 1.1em;
-  color: var(--primary-color);
-  text-shadow: 0 0 5px red, 0 0 10px gold;
-  animation: flicker 1s infinite;
-  font-weight: bold;
-  display: inline-block;
-}
-
-@keyframes flicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-  20%, 22%, 24%, 55% { opacity: 0.3; }
-}
-
 .footer {
-  background-color: #000;
-  color: #eee;
+  background-color: var(--background-dark);
+  color: var(--text-secondary);
   padding: 2rem 1rem;
   margin-top: 3rem;
   font-size: 0.9rem;
@@ -260,23 +252,12 @@ button:hover {
 }
 
 .footer-section a {
-  color: #66ccff;
+  color: var(--accent-color);
   text-decoration: none;
 }
 
 .footer-section a:hover {
   text-decoration: underline;
-}
-
-.cell.revealed:not(.mine) {
-  background: #002244;
-  border-color: #ff444466;
-}
-
-.cell.revealed:not(.mine)::before {
-  content: '✖';
-  color: #ff4444;
-  opacity: 0.7;
 }
 
 .dashboard {
@@ -286,7 +267,7 @@ button:hover {
   gap: 2rem;
   margin-bottom: 2rem;
   padding: 1rem;
-  background: #000;
+  background: var(--background-light);
   border: 1px solid var(--accent-color);
   border-radius: 10px;
 }
@@ -300,7 +281,7 @@ button:hover {
   display: block;
   margin: 10px 0;
   padding: 10px;
-  background: #1e1e1e;
+  background: var(--card-bg);
   color: var(--accent-color);
   border: 1px solid var(--accent-color);
   border-radius: 8px;
@@ -314,7 +295,7 @@ button:hover {
 }
 
 #networkSelector {
-  background-color: #000c2e;
+  background-color: var(--background-light);
   color: var(--accent-color);
   border: 2px solid var(--accent-color);
   border-radius: 10px;
@@ -329,7 +310,7 @@ button:hover {
 }
 
 #networkSelector:hover {
-  background-color: #002b55;
+  background-color: #32383e;
   box-shadow: 0 0 15px var(--accent-color);
 }
 
@@ -339,118 +320,90 @@ button:hover {
   box-shadow: 0 0 12px var(--primary-color);
 }
 
-.panel {
-  background: rgba(0, 0, 51, 0.9);
-  border: 2px solid var(--accent-color);
-  box-shadow: 0 0 15px var(--accent-color);
-  padding: 40px;
-  border-radius: 20px;
-  text-align: center;
-  max-width: 400px;
+/* Tabs */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
 }
 
-.panel h1, .panel p {
-  color: var(--accent-color);
+.tab-button {
+  background: var(--card-bg);
+  border: 2px solid var(--primary);
+  padding: 0.7rem 1.5rem;
+  color: var(--primary);
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: 0.3s;
 }
 
-#refLink {
+.tab-button:hover,
+.tab-button.active {
+  background-color: var(--primary);
+  color: var(--bg-dark);
+}
+
+/* Game frame */
+.game-frame {
+  display: none;
+  animation: fadeIn 0.5s ease;
+}
+
+.game-frame.active {
+  display: block;
+}
+
+iframe {
   width: 100%;
-  padding: 2px;
-  border: 2px solid var(--accent-color);
-  background-color: #000;
-  color: var(--accent-color);
-  font-size: 1em;
+  height: 600px;
+  border: none;
   border-radius: 10px;
-  margin-bottom: 5px;
-  text-align: center;
+  box-shadow: 0 0 15px #000;
 }
 
- .tabs {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 2rem;
-      gap: 1rem;
-    }
+@media screen and (max-width: 768px) {
+  iframe { height: 400px; }
+  .tab-button { padding: 0.5rem 1rem; font-size: 0.9rem; }
+}
 
-    .tab-button {
-      background: var(--card-bg);
-      border: 2px solid var(--primary);
-      padding: 0.7rem 1.5rem;
-      color: var(--primary);
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 12px;
-      transition: 0.3s;
-    }
-
-    .tab-button:hover,
-    .tab-button.active {
-      background-color: var(--primary);
-      color: var(--bg-dark);
-    }
-
-    .game-frame {
-      display: none;
-      animation: fadeIn 0.5s ease;
-    }
-
-    .game-frame.active {
-      display: block;
-    }
-
-    iframe {
-      width: 100%;
-      height: 600px;
-      border: none;
-      border-radius: 10px;
-      box-shadow: 0 0 15px #000;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media screen and (max-width: 768px) {
-      iframe { height: 400px; }
-      .tab-button { padding: 0.5rem 1rem; font-size: 0.9rem; }
-    }
-
+/* Popups */
 .popup {
-      position: fixed;
-      bottom: 10%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.9);
-      border: 2px solid #f0b90b;
-      border-radius: 10px;
-      padding: 10px;
-      box-shadow: 0 0 10px #f0b90b;
-      display: none;
-      z-index: 1000;
-      animation: fadeIn 0.3s ease-out;
-    }
+  position: fixed;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid var(--accent-color);
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 0 10px var(--accent-color);
+  display: none;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
 
-    .popup img {
-      max-width: 100%;
-      border-radius: 8px;
-    }
+.popup img {
+  max-width: 100%;
+  border-radius: 8px;
+}
 
-    .close-btn {
-      position: absolute;
-      top: 5px;
-      right: 8px;
-      font-size: 20px;
-      color: #f0b90b;
-      cursor: pointer;
-    }
+.close-btn {
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  font-size: 20px;
+  color: var(--accent-color);
+  cursor: pointer;
+}
 
-    .popup1 { width: 200px; height: auto; }
-    .popup2 { width: 300px; height: auto; }
-    .popup3 { width: 400px; height: auto; }
+.popup1 { width: 200px; height: auto; }
+.popup2 { width: 300px; height: auto; }
+.popup3 { width: 400px; height: auto; }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translate(-50%, 10%); }
-      to { opacity: 1; transform: translateX(-50%); }
-    }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, 10%); }
+  to { opacity: 1; transform: translateX(-50%); }
+}
