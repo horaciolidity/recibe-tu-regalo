@@ -201,7 +201,24 @@ function showPopup(id) {
       setTimeout(() => showPopup('popup2'), 10000);
       setTimeout(() => showPopup('popup3'), 20000);
     });
+ function closeBanner() {
+      document.getElementById("picassoBanner").style.display = "none";
+    }
 
+    // Mostrar banner a los 30 segundos
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        const banner = document.getElementById("picassoBanner");
+        banner.style.display = "block";
+
+        // Ocultar automáticamente después de 30 segundos
+        setTimeout(() => {
+          if (banner.style.display === "block") {
+            banner.style.display = "none";
+          }
+        }, 30000);
+      }, 30000);
+    });
 
 
 
