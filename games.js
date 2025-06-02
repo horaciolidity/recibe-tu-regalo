@@ -180,20 +180,6 @@ function copyLink() {
   alert("¡Enlace copiado al cosmos!");
 }
 
- const buttons = document.querySelectorAll('.tab-button');
-    const games = document.querySelectorAll('.game-frame');
-
-    buttons.forEach(button => {
-      button.addEventListener('click', () => {
-        // remove active states
-        buttons.forEach(btn => btn.classList.remove('active'));
-        games.forEach(game => game.classList.remove('active'));
-
-        // activate selected
-        button.classList.add('active');
-        document.getElementById(button.dataset.game).classList.add('active');
-      });
-    });
 
 
 function showCountdown() {
