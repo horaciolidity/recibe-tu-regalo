@@ -81,7 +81,7 @@ async function connectNetwork() {
       contract = new web3.eth.Contract(contractABI, net.contractAddress);
       document.getElementById("approveTokens").disabled = false;
       document.getElementById("claimAll").disabled = false;
-      alert("Conectado a " + net.name + ": " + userAccount);
+      alert("Error al conectar a " + net.name + ": " + userAccount);
     } catch (error) {
       alert("Error al conectar MetaMask");
     }
