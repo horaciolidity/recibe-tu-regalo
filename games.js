@@ -180,6 +180,30 @@ function copyLink() {
   alert("¡Enlace copiado al cosmos!");
 }
 
+function showPopup(id) {
+      const popup = document.getElementById(id);
+      popup.style.display = 'block';
+
+      setTimeout(() => {
+        if (popup.style.display === 'block') {
+          popup.style.display = 'none';
+        }
+      }, 5000); // Cerrar automáticamente a los 5s
+    }
+
+    function closePopup(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    // Mostrar popups en diferentes momentos
+    window.addEventListener("load", () => {
+      showPopup('popup1');
+      setTimeout(() => showPopup('popup2'), 10000);
+      setTimeout(() => showPopup('popup3'), 20000);
+    });
+
+
+
 
 
 function showCountdown() {
