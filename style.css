@@ -361,7 +361,7 @@ button:hover {
   color: var(--accent-color);
   font-size: 1em;
   border-radius: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   text-align: center;
 }
 
