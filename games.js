@@ -236,6 +236,7 @@ function showCountdown() {
   if (el) el.textContent = `⏳ Tiempo para nuevos intentos: ${hours}h ${minutes}m ${seconds}s`;
 }
 
+// Actualiza tiempo de sesión (esto ya estaba bien)
 setInterval(() => {
   sessionSeconds++;
   const el = document.getElementById("sessionTime");
@@ -246,5 +247,10 @@ setInterval(() => {
   }
 }, 1000);
 
+// ✅ Actualiza el countdown cada segundo
+setInterval(showCountdown, 1000);
+
+// Iniciar juego
 initializeGrid();
+
 
