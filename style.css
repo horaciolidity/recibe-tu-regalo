@@ -424,16 +424,16 @@ iframe {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 100%;
-  max-width: 100vw; /* Asegura que no se pase del ancho de pantalla */
-  padding: 20px 40px;
+  width: 90%;
+  max-width: 400px;
+  padding: 20px;
   background: linear-gradient(120deg, #ffcc00, #ff6699, #66ccff, #33cc99);
   background-size: 400% 400%;
   animation: gradientMove 15s ease infinite;
   color: #000;
   font-weight: bold;
   text-align: center;
-  font-size: 1.6em;
+  font-size: 1.4em;
   letter-spacing: 1px;
   border-top: 6px double #000;
   border-bottom: 6px double #000;
@@ -445,7 +445,6 @@ iframe {
   z-index: 9999;
   box-sizing: border-box;
 }
-
 
 @keyframes gradientMove {
   0% { background-position: 0% 50%; }
