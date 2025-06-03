@@ -372,9 +372,9 @@ iframe {
 /* Popups */
 .popup {
   position: fixed;
-  bottom: 10%;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   background: rgba(0, 0, 0, 0.9);
   border: 2px solid var(--accent-color);
   border-radius: 10px;
@@ -383,6 +383,7 @@ iframe {
   display: none;
   z-index: 1000;
   animation: fadeIn 0.3s ease-out;
+  max-width: 90%; /* Asegura que no se desborde en móviles */
 }
 
 .popup img {
@@ -399,13 +400,20 @@ iframe {
   cursor: pointer;
 }
 
-.popup1 { width: 200px; height: auto; }
-.popup2 { width: 300px; height: auto; }
-.popup3 { width: 400px; height: auto; }
+.popup1 { width: 200px; }
+.popup2 { width: 300px; }
+.popup3 { width: 400px; }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translate(-50%, 10%); }
-  to { opacity: 1; transform: translateX(-50%); }
+  from { opacity: 0; transform: translate(-50%, -40%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+/* Responsive: si el ancho es chico, limitar el popup2 y popup3 */
+@media (max-width: 480px) {
+  .popup2, .popup3 {
+    width: 90%;
+  }
 }
 
 .banner {
