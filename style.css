@@ -373,7 +373,7 @@ iframe {
 .popup {
   position: fixed;
   top: 50%;
-  left: 25%;
+  left: 30%;
   transform: translate(-50%, -50%);
   background: rgba(0, 0, 0, 0.9);
   border: 2px solid var(--accent-color);
@@ -422,7 +422,7 @@ iframe {
   display: none;
   position: fixed;
   top: 0;
-  left: 25%;
+  left: 30%;
   transform: translateX(-50%);
   width: 90%;
   max-width: 400px;
