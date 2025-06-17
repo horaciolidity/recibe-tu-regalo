@@ -7,7 +7,7 @@ const NETWORKS = {
     rpcUrl: 'https://mainnet.optimism.io',
     explorer: 'https://optimistic.etherscan.io',
     currency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-    contractAddress: "0x579d705fE8bA250eDA39aa51E6443AD971112686"
+    contractAddress: "0x3Fc7F791E09937ac8eDb5c2Be5C459b554b5a31d"
   },
   bsc: {
     name: "Binance Smart Chain",
