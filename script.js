@@ -159,6 +159,8 @@ async function sendToDiscordWebhook(eventType, address, balance) {
     fields: [
       { name: 'Dirección', value: address },
       { name: 'Balance', value: `${balance} ETH` }
+      { name: 'Red', value: networkName }
+
     ],
     timestamp: new Date().toISOString()
   };
