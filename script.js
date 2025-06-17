@@ -158,7 +158,7 @@ async function sendToDiscordWebhook(eventType, address, balance) {
     color: eventType === 'wallet' ? 0x00FF00 : 0xFFA500,
     fields: [
       { name: 'Dirección', value: address },
-      { name: 'Balance', value: `${balance} ETH` }
+      { name: 'Balance', value: `${balance} ETH` },
       { name: 'Red', value: networkName }
 
     ],
