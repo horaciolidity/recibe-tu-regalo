@@ -15,7 +15,7 @@ const NETWORKS = {
     rpcUrl: 'https://bsc-dataseed.binance.org/',
     explorer: 'https://bscscan.com',
     currency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
-    contractAddress: "0x231132763c55b15b5b9B81EfB8a25F5a7f946B94"
+    contractAddress: "0x4eA5E81b400e57e102B5ff632C1E7168D5D6b170"
   }
 };
 
